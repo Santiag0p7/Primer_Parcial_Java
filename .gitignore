@@ -19,6 +19,30 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# virtual machine crash logs
 hs_err_pid*
 replay_pid*
+
+# ==========================================
+# REGLAS ADICIONALES PARA JAVA WEB / IDEs
+# ==========================================
+
+# Carpetas de compilación y temporales
+/build/
+/target/
+/out/
+/work/
+/tmp/
+
+# Archivos de configuración de IDEs (VS Code, Eclipse, NetBeans, IntelliJ)
+.settings/
+.classpath
+.project
+.idea/
+*.iml
+*.nbconst
+/nbproject/private/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
