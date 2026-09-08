@@ -489,10 +489,10 @@
                         Registrate ahora y accede a las mejores opciones del mercado.
                     </p>
                     <div class="d-flex gap-3 justify-content-center flex-wrap">
-                        <a href="${pageContext.request.contextPath}/registro" class="btn btn-gold btn-lg px-5">
+                        <a href="${pageContext.request.contextPath}/RegistroServlet" class="btn btn-gold btn-lg px-5">
                             <i class="bi bi-person-plus me-2"></i> Registrarse Gratis
                         </a>
-                        <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-light btn-lg px-5">
+                        <a href="${pageContext.request.contextPath}/LoginServlet" class="btn btn-outline-light btn-lg px-5">
                             <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesion
                         </a>
                     </div>

@@ -51,10 +51,10 @@
             </ul>
 
             <div class="d-flex gap-2">
-                <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-light btn-nav">
+                <a href="${pageContext.request.contextPath}/LoginServlet" class="btn btn-outline-light btn-nav">
                     <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesion
                 </a>
-                <a href="${pageContext.request.contextPath}/registro" class="btn btn-gold btn-nav">
+                <a href="${pageContext.request.contextPath}/RegistroServlet" class="btn btn-gold btn-nav">
                     <i class="bi bi-person-plus me-1"></i> Registrarse
                 </a>
             </div>

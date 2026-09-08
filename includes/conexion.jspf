@@ -1,0 +1,38 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.DriverManager" %>
+<%@ page import="java.sql.SQLException" %>
+<%
+    // =============================================
+    // conexion.jspf - Conexion a la Base de Datos
+    // =============================================
+    // Este archivo se incluye en las paginas que
+    // necesiten acceso directo a la BD via JDBC.
+    // =============================================
+
+    // Configuracion de conexion - XAMPP por defecto
+    String DB_HOST     = "localhost";
+    int    DB_PORT     = 3306;
+    String DB_NOMBRE   = "inmobiliaria";
+    String DB_USUARIO  = "root";
+    String DB_PASS     = "";
+
+    String DB_URL = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT
+            + "/" + DB_NOMBRE
+            + "?useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true";
+
+    // Cargar driver una sola vez
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        out.println("Error: No se encontro el driver JDBC de MySQL.");
+    }
+
+    // Obtener conexion
+    Connection conexion = null;
+    try {
+        conexion = DriverManager.getConnection(DB_URL, DB_USUARIO, DB_PASS);
+    } catch (SQLException e) {
+        out.println("Error al conectar a la base de datos: " + e.getMessage());
+    }
+%>

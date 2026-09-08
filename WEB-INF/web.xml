@@ -12,16 +12,67 @@
         <welcome-file>index</welcome-file>
     </welcome-file-list>
 
+    <!-- ==========================================
+         SERVLETS - Controladores
+         ========================================== -->
+
+    <!-- Landing Page / Pagina Principal -->
     <servlet>
         <servlet-name>LandingServlet</servlet-name>
         <servlet-class>com.inmobiliaria.controller.LandingServlet</servlet-class>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>LandingServlet</servlet-name>
         <url-pattern>/index</url-pattern>
     </servlet-mapping>
 
+    <!-- Login -->
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- Registro -->
+    <servlet>
+        <servlet-name>RegistroServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.RegistroServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegistroServlet</servlet-name>
+        <url-pattern>/RegistroServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- Logout -->
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- ==========================================
+         FILTROS - Seguridad
+         ========================================== -->
+
+    <!-- Filtro de Autenticacion y Control de Acceso por Rol -->
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.inmobiliaria.filter.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/dashboard/*</url-pattern>
+    </filter-mapping>
+
+    <!-- ==========================================
+         CONFIGURACION DE SESION
+         ========================================== -->
     <session-config>
         <session-timeout>30</session-timeout>
         <cookie-config>

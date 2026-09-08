@@ -36,7 +36,7 @@
                     <li><a href="#nosotros">Nosotros</a></li>
                     <li><a href="#servicios">Servicios</a></li>
                     <li><a href="#propiedades">Propiedades</a></li>
-                    <li><a href="${pageContext.request.contextPath}/login">Iniciar Sesion</a></li>
+                    <li><a href="${pageContext.request.contextPath}/LoginServlet">Iniciar Sesion</a></li>
                 </ul>
             </div>
 
