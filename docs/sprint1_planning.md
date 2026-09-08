@@ -44,3 +44,6 @@
 - **Criterios de Aceptación (DoD):**
   - [ ] Implementación de un `Filter` en Servlets que valide la sesión y el rol del usuario.
   - [ ] Redirección automática a página de acceso denegado si intenta ingresar escribiendo la URL directamente sin permisos.
+
+  ## Evidencia del Tablero Kanban
+![Tablero Scrum Sprint 1](img/tablero_sprint1.png)
