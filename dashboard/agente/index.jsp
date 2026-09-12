@@ -50,6 +50,10 @@
                                     <i class="bi bi-house-door-fill fs-1" style="color:var(--gold);"></i>
                                     <h5 class="mt-2">Mis Propiedades</h5>
                                     <p class="text-muted small">Propiedades asignadas</p>
+                                    <a href="${pageContext.request.contextPath}/PropiedadServlet?action=list"
+                                       class="btn btn-gold btn-sm">
+                                        <i class="bi bi-eye me-1"></i> Gestionar
+                                    </a>
                                 </div>
                             </div>
                         </div>

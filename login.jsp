@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="tituloPagina" value="Iniciar Sesion - Inmobiliaria UTS" scope="request"/>
 
-<%@ include file="/includes/header.jspf"%>
+<%@ include file="/includes/header.jsp"%>
 
     <style>
         body { min-height: 100vh; display: flex; align-items: center; justify-content: center;
@@ -100,4 +100,4 @@
         </div>
     </div>
 
-<%@ include file="/includes/footer.jspf"%>
+<%@ include file="/includes/footer.jsp"%>

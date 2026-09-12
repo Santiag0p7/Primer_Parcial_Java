@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<%@ include file="/includes/header.jspf"%>
+<%@ include file="/includes/header.jsp"%>
 
     <!-- Hero Banner con Buscador -->
     <section id="inicio" class="hero-section">
@@ -501,4 +501,4 @@
         </div>
     </section>
 
-<%@ include file="/includes/footer.jspf"%>
+<%@ include file="/includes/footer.jsp"%>

@@ -1,0 +1,169 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:if test="${empty sessionScope.idUsuario}">
+    <c:redirect url="${pageContext.request.contextPath}/LoginServlet"/>
+</c:if>
+<c:set var="esEdicion" value="${not empty propiedad and propiedad.idPropiedad > 0}"/>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${esEdicion ? 'Editar' : 'Nueva'} Propiedad - Inmobiliaria UTS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assets/css/styles.css" rel="stylesheet">
+    <style>
+        .dashboard-nav { background: #0B2545; padding: 0.75rem 0; }
+        .form-card { border: none; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+        .form-label { font-weight: 600; color: #0B2545; font-size: 0.9rem; }
+        .form-control:focus, .form-select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,134,11,0.15); }
+        .section-title-form { font-size: 1rem; font-weight: 700; color: var(--gold-dark);
+                              text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body style="background:#F8F9FA;">
+
+    <nav class="dashboard-nav">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="${pageContext.request.contextPath}/dashboard/agente/index.jsp"
+               class="text-white fw-bold text-decoration-none" style="font-family:'Playfair Display',serif;">
+                <i class="bi bi-buildings-fill me-2" style="color:var(--gold);"></i>
+                Inmobiliaria <span style="color:var(--gold);">UTS</span>
+                <span class="badge bg-primary ms-2">INMOBILIARIA</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesion
+            </a>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h2 class="mb-0" style="color:#0B2545;">
+                <i class="bi bi-${esEdicion ? 'pencil-square' : 'plus-circle'} me-2" style="color:var(--gold);"></i>
+                ${esEdicion ? 'Editar Propiedad' : 'Nueva Propiedad'}
+            </h2>
+            <a href="${pageContext.request.contextPath}/PropiedadServlet?action=list"
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Volver
+            </a>
+        </div>
+
+        <!-- Alerta de error (incluye matricula duplicada) -->
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>${error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        </c:if>
+
+        <div class="card form-card">
+            <div class="card-body p-4">
+                <form action="${pageContext.request.contextPath}/PropiedadServlet" method="post" novalidate>
+                    <input type="hidden" name="action" value="${esEdicion ? 'update' : 'insert'}">
+                    <c:if test="${esEdicion}">
+                        <input type="hidden" name="idPropiedad" value="${propiedad.idPropiedad}">
+                    </c:if>
+
+                    <!-- Identificacion -->
+                    <p class="section-title-form mb-3"><i class="bi bi-card-text me-1"></i> Identificacion</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label for="matriculaInmobiliaria" class="form-label">Matricula Inmobiliaria *</label>
+                            <input type="text" class="form-control" id="matriculaInmobiliaria"
+                                   name="matriculaInmobiliaria" maxlength="50" required
+                                   placeholder="Ej: MAT-001-2026"
+                                   value="${propiedad.matriculaInmobiliaria}">
+                            <div class="form-text">Debe ser unica en el sistema.</div>
+                        </div>
+                        <div class="col-md-8">
+                            <label for="titulo" class="form-label">Titulo *</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo"
+                                   maxlength="150" required placeholder="Ej: Casa campestre en venta"
+                                   value="${propiedad.titulo}">
+                        </div>
+                        <div class="col-12">
+                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <textarea class="form-control" id="descripcion" name="descripcion"
+                                      rows="3" maxlength="1000"
+                                      placeholder="Descripcion detallada del inmueble...">${propiedad.descripcion}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Detalles -->
+                    <p class="section-title-form mb-3"><i class="bi bi-geo-alt me-1"></i> Detalles</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label for="idTipo" class="form-label">Tipo de Propiedad *</label>
+                            <select class="form-select" id="idTipo" name="idTipo" required>
+                                <option value="">-- Seleccione --</option>
+                                <c:forEach var="t" items="${tipos}">
+                                    <option value="${t.key}" ${propiedad.idTipo == t.key ? 'selected' : ''}>
+                                        ${t.value}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="idCiudad" class="form-label">Ciudad *</label>
+                            <select class="form-select" id="idCiudad" name="idCiudad" required>
+                                <option value="">-- Seleccione --</option>
+                                <c:forEach var="c" items="${ciudades}">
+                                    <option value="${c.key}" ${propiedad.idCiudad == c.key ? 'selected' : ''}>
+                                        ${c.value}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="direccion" class="form-label">Direccion</label>
+                            <input type="text" class="form-control" id="direccion" name="direccion"
+                                   maxlength="180" placeholder="Ej: Calle 10 # 20-30"
+                                   value="${propiedad.direccion}">
+                        </div>
+                    </div>
+
+                    <!-- Caracteristicas -->
+                    <p class="section-title-form mb-3"><i class="bi bi-rulers me-1"></i> Caracteristicas</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label for="precio" class="form-label">Precio (COP) *</label>
+                            <input type="number" class="form-control" id="precio" name="precio"
+                                   required min="0" step="0.01" placeholder="250000000"
+                                   value="${propiedad.precio}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="habitaciones" class="form-label">Habitaciones *</label>
+                            <input type="number" class="form-control" id="habitaciones" name="habitaciones"
+                                   required min="0" max="50" step="1" value="${propiedad.habitaciones}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="banos" class="form-label">Banos *</label>
+                            <input type="number" class="form-control" id="banos" name="banos"
+                                   required min="0" max="50" step="1" value="${propiedad.banos}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="areaM2" class="form-label">Area (m2) *</label>
+                            <input type="number" class="form-control" id="areaM2" name="areaM2"
+                                   required min="0" step="0.01" placeholder="120.5"
+                                   value="${propiedad.areaM2}">
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 pt-2 border-top">
+                        <button type="submit" class="btn btn-gold">
+                            <i class="bi bi-save me-1"></i> ${esEdicion ? 'Actualizar' : 'Guardar'} Propiedad
+                        </button>
+                        <a href="${pageContext.request.contextPath}/PropiedadServlet?action=list"
+                           class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -56,6 +56,16 @@
         <url-pattern>/LogoutServlet</url-pattern>
     </servlet-mapping>
 
+    <!-- CRUD de Propiedades (Sprint 2) -->
+    <servlet>
+        <servlet-name>PropiedadServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.PropiedadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PropiedadServlet</servlet-name>
+        <url-pattern>/PropiedadServlet</url-pattern>
+    </servlet-mapping>
+
     <!-- ==========================================
          FILTROS - Seguridad
          ========================================== -->

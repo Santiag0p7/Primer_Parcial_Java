@@ -1,153 +1,97 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 08-09-2026 a las 06:34:53
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- ============================================================
+-- SCRIPT DDL - SPRINT 1 (CIMIENTOS Y AUTENTICACION)
+-- ============================================================
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+CREATE DATABASE IF NOT EXISTS inmobiliaria
+    DEFAULT CHARACTER SET utf8mb4
+    DEFAULT COLLATE utf8mb4_spanish_ci;
 
+USE inmobiliaria;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+-- 1. TABLA: ROL (Solo roles autenticados)
+CREATE TABLE rol (
+    id_rol INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
+);
 
---
--- Base de datos: `inmobiliaria`
---
+-- 2. TABLA: USUARIO
+CREATE TABLE usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    correo VARCHAR(100) NOT NULL UNIQUE, -- Restriccion UNIQUE obligatoria
+    password_hash VARCHAR(255) NOT NULL, -- Guardara el hash cifrado
+    estado BOOLEAN DEFAULT TRUE,
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
--- --------------------------------------------------------
+-- 3. TABLA INTERMEDIA N:M: USUARIO_ROL
+CREATE TABLE usuario_rol (
+    id_usuario INT NOT NULL,
+    id_rol INT NOT NULL,
+    fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_usuario, id_rol),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
---
--- Estructura de tabla para la tabla `perfil`
---
+-- 4. TABLA 1:1: PERFIL
+CREATE TABLE perfil (
+    id_perfil INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL UNIQUE, -- Restriccion UNIQUE garantiza relacion 1:1
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    documento VARCHAR(20) NOT NULL UNIQUE,
+    telefono VARCHAR(20),
+    direccion VARCHAR(150),
+    foto_url VARCHAR(255),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-CREATE TABLE `perfil` (
-  `id_perfil` int(11) NOT NULL,
-  `id_usuario` int(11) NOT NULL,
-  `nombres` varchar(100) NOT NULL,
-  `apellidos` varchar(100) NOT NULL,
-  `documento` varchar(20) NOT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
-  `direccion` varchar(150) DEFAULT NULL,
-  `foto_url` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+-- ============================================================
+-- LIMPIEZA: elimina usuarios/perfiles viejos con hash invalido
+-- (usuario_rol y perfil caen por ON DELETE CASCADE)
+-- ============================================================
+DELETE FROM usuario;
 
--- --------------------------------------------------------
+-- ============================================================
+-- INSERCIONES INICIALES
+-- ============================================================
 
---
--- Estructura de tabla para la tabla `rol`
---
+-- Insertar solo los 3 roles del sistema
+INSERT INTO rol (id_rol, nombre) VALUES
+(1, 'ADMINISTRADOR'),
+(2, 'INMOBILIARIA'),
+(3, 'CLIENTE')
+ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 
-CREATE TABLE `rol` (
-  `id_rol` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+-- ------------------------------------------------------------
+-- Usuario 1: ADMINISTRADOR (admin@inmobiliaria.com / admin123)
+-- ------------------------------------------------------------
+INSERT INTO usuario (id_usuario, correo, password_hash, estado) VALUES
+(1, 'admin@inmobiliaria.com', '$2a$10$QOMno2q8bI1hxnQ.UeByROJwZHHZ9phiNT0Qwt1mRnH.sFIcpvPpe', TRUE);
 
--- --------------------------------------------------------
+INSERT INTO usuario_rol (id_usuario, id_rol) VALUES (1, 1);
 
---
--- Estructura de tabla para la tabla `usuario`
---
+INSERT INTO perfil (id_usuario, nombres, apellidos, documento, telefono, direccion) VALUES
+(1, 'Admin', 'Sistema', '1000000000', '3001234567', 'Calle 10 # 20-30');
 
-CREATE TABLE `usuario` (
-  `id_usuario` int(11) NOT NULL,
-  `correo` varchar(100) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `estado` tinyint(1) DEFAULT 1,
-  `fecha_registro` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+-- ------------------------------------------------------------
+-- Usuario 2: INMOBILIARIA (inmo@inmobiliaria.com / inmo123)
+-- ------------------------------------------------------------
+INSERT INTO usuario (id_usuario, correo, password_hash, estado) VALUES
+(2, 'inmo@inmobiliaria.com', '$2a$10$SyuRTUKTog5u27zM0U.DcOHEpZPNfNK0oOMnc2SXXoMyfAEcHaJOa', TRUE);
 
--- --------------------------------------------------------
+INSERT INTO usuario_rol (id_usuario, id_rol) VALUES (2, 2);
 
---
--- Estructura de tabla para la tabla `usuario_rol`
---
+INSERT INTO perfil (id_usuario, nombres, apellidos, documento, telefono, direccion) VALUES
+(2, 'Inmobiliaria', 'Demo', '2000000000', '3007654321', 'Carrera 5 # 10-15');
 
-CREATE TABLE `usuario_rol` (
-  `id_usuario` int(11) NOT NULL,
-  `id_rol` int(11) NOT NULL,
-  `fecha_asignacion` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+-- ------------------------------------------------------------
+-- Usuario 3: CLIENTE (cliente@inmobiliaria.com / cliente123)
+-- ------------------------------------------------------------
+INSERT INTO usuario (id_usuario, correo, password_hash, estado) VALUES
+(3, 'cliente@inmobiliaria.com', '$2a$10$0pjPppOfaxs5JTE61lb2iOq5u17T7NiqHViWtmpYjzhXLanIVjWPe', TRUE);
 
---
--- Índices para tablas volcadas
---
+INSERT INTO usuario_rol (id_usuario, id_rol) VALUES (3, 3);
 
---
--- Indices de la tabla `perfil`
---
-ALTER TABLE `perfil`
-  ADD PRIMARY KEY (`id_perfil`),
-  ADD UNIQUE KEY `id_usuario` (`id_usuario`),
-  ADD UNIQUE KEY `documento` (`documento`);
-
---
--- Indices de la tabla `rol`
---
-ALTER TABLE `rol`
-  ADD PRIMARY KEY (`id_rol`),
-  ADD UNIQUE KEY `nombre` (`nombre`);
-
---
--- Indices de la tabla `usuario`
---
-ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `correo` (`correo`);
-
---
--- Indices de la tabla `usuario_rol`
---
-ALTER TABLE `usuario_rol`
-  ADD PRIMARY KEY (`id_usuario`,`id_rol`),
-  ADD KEY `id_rol` (`id_rol`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `perfil`
---
-ALTER TABLE `perfil`
-  MODIFY `id_perfil` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `rol`
---
-ALTER TABLE `rol`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `usuario`
---
-ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `perfil`
---
-ALTER TABLE `perfil`
-  ADD CONSTRAINT `perfil_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `usuario_rol`
---
-ALTER TABLE `usuario_rol`
-  ADD CONSTRAINT `usuario_rol_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `usuario_rol_ibfk_2` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+INSERT INTO perfil (id_usuario, nombres, apellidos, documento, telefono, direccion) VALUES
+(3, 'Cliente', 'Demo', '3000000000', '3009876543', 'Avenida 20 # 30-40');
