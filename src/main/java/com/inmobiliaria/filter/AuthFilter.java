@@ -55,7 +55,10 @@ public class AuthFilter implements Filter {
         // Verificar si la ruta es compatible con el rol
         boolean autorizado = false;
 
-        if (ruta.startsWith("/dashboard/admin")) {
+        // Vista de perfil compartida por todos los roles autenticados
+        if (ruta.equals("/dashboard/mi_perfil.jsp")) {
+            autorizado = true;
+        } else if (ruta.startsWith("/dashboard/admin")) {
             autorizado = "ADMINISTRADOR".equals(rol);
         } else if (ruta.startsWith("/dashboard/agente")) {
             autorizado = "INMOBILIARIA".equals(rol);

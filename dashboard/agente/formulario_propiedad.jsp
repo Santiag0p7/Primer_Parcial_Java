@@ -1,45 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:if test="${empty sessionScope.idUsuario}">
     <c:redirect url="${pageContext.request.contextPath}/LoginServlet"/>
 </c:if>
 <c:set var="esEdicion" value="${not empty propiedad and propiedad.idPropiedad > 0}"/>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${esEdicion ? 'Editar' : 'Nueva'} Propiedad - Inmobiliaria UTS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/assets/css/styles.css" rel="stylesheet">
-    <style>
-        .dashboard-nav { background: #0B2545; padding: 0.75rem 0; }
-        .form-card { border: none; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
-        .form-label { font-weight: 600; color: #0B2545; font-size: 0.9rem; }
-        .form-control:focus, .form-select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,134,11,0.15); }
-        .section-title-form { font-size: 1rem; font-weight: 700; color: var(--gold-dark);
-                              text-transform: uppercase; letter-spacing: 0.5px; }
-    </style>
-</head>
-<body style="background:#F8F9FA;">
+<c:set var="tituloPagina" value="${esEdicion ? 'Editar' : 'Nueva'} Propiedad - Inmobiliaria UTS" scope="request"/>
+<%@ include file="/includes/header.jsp"%>
 
-    <nav class="dashboard-nav">
-        <div class="container d-flex justify-content-between align-items-center">
-            <a href="${pageContext.request.contextPath}/dashboard/agente/index.jsp"
-               class="text-white fw-bold text-decoration-none" style="font-family:'Playfair Display',serif;">
-                <i class="bi bi-buildings-fill me-2" style="color:var(--gold);"></i>
-                Inmobiliaria <span style="color:var(--gold);">UTS</span>
-                <span class="badge bg-primary ms-2">INMOBILIARIA</span>
-            </a>
-            <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesion
-            </a>
-        </div>
-    </nav>
+<style>
+    .form-card { border: none; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+    .form-label { font-weight: 600; color: #0B2545; font-size: 0.9rem; }
+    .form-control:focus, .form-select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,134,11,0.15); }
+    .section-title-form { font-size: 1rem; font-weight: 700; color: var(--gold-dark);
+                          text-transform: uppercase; letter-spacing: 0.5px; }
+</style>
 
-    <div class="container py-4">
+    <div class="container" style="padding-top:120px; padding-bottom:2rem;">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h2 class="mb-0" style="color:#0B2545;">
                 <i class="bi bi-${esEdicion ? 'pencil-square' : 'plus-circle'} me-2" style="color:var(--gold);"></i>
@@ -150,6 +127,61 @@
                                    required min="0" step="0.01" placeholder="120.5"
                                    value="${propiedad.areaM2}">
                         </div>
+                    </div>
+
+                    <!-- Caracteristicas N:M -->
+                    <p class="section-title-form mb-3"><i class="bi bi-check2-square me-1"></i> Caracteristicas del Inmueble</p>
+                    <div class="row g-2 mb-4">
+                        <c:choose>
+                            <c:when test="${empty caracteristicas}">
+                                <div class="col-12">
+                                    <p class="text-muted small mb-0">
+                                        No hay caracteristicas en el catalogo. Ejecute el script sprint2.sql.
+                                    </p>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="car" items="${caracteristicas}">
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="caracteristicas" value="${car.idCaracteristica}"
+                                                   id="car_${car.idCaracteristica}"
+                                                   ${idsSeleccionados.contains(car.idCaracteristica) ? 'checked' : ''}>
+                                            <label class="form-check-label" for="car_${car.idCaracteristica}">
+                                                ${car.nombre}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+
+                    <!-- Galeria de imagenes 1:N -->
+                    <p class="section-title-form mb-3"><i class="bi bi-images me-1"></i> Galeria de Imagenes</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="urlPrincipal" class="form-label">URL Imagen Principal</label>
+                            <input type="url" class="form-control" id="urlPrincipal" name="urlPrincipal"
+                                   maxlength="500" placeholder="https://..."
+                                   value="${not empty imagenes ? imagenes[0].urlImagen : ''}">
+                            <div class="form-text">Imagen destacada del inmueble.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="urlsImagenes" class="form-label">URLs Imagenes Adicionales</label>
+                            <textarea class="form-control" id="urlsImagenes" name="urlsImagenes"
+                                      rows="3" placeholder="Una URL por linea"></textarea>
+                            <div class="form-text">Una URL por linea (imagenes secundarias).</div>
+                        </div>
+                        <c:if test="${esEdicion}">
+                            <div class="col-12">
+                                <a href="${pageContext.request.contextPath}/PropiedadServlet?action=galeria&id=${propiedad.idPropiedad}"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-images me-1"></i> Gestionar galeria (${fn:length(imagenes)} imagenes)
+                                </a>
+                            </div>
+                        </c:if>
                     </div>
 
                     <div class="d-flex gap-2 pt-2 border-top">

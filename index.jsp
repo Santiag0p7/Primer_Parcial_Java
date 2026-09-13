@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%@ include file="/includes/header.jsp"%>
 
@@ -31,10 +32,10 @@
                                         <label class="form-label search-label">
                                             <i class="bi bi-house-door me-1"></i> Tipo de Inmueble
                                         </label>
-                                        <select name="tipo" class="form-select search-select">
+                                        <select name="idTipo" class="form-select search-select">
                                             <option value="" selected>Todos los tipos</option>
-                                            <c:forEach var="tipo" items="${tiposInmueble}">
-                                                <option value="${tipo.valor}">${tipo.etiqueta}</option>
+                                            <c:forEach var="ti" items="${tipos}">
+                                                <option value="${ti.key}">${ti.value}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -42,23 +43,19 @@
                                         <label class="form-label search-label">
                                             <i class="bi bi-geo-alt me-1"></i> Ciudad
                                         </label>
-                                        <select name="ciudad" class="form-select search-select">
+                                        <select name="idCiudad" class="form-select search-select">
                                             <option value="" selected>Todas las ciudades</option>
-                                            <c:forEach var="ciudad" items="${ciudades}">
-                                                <option value="${ciudad.valor}">${ciudad.etiqueta}</option>
+                                            <c:forEach var="ci" items="${ciudades}">
+                                                <option value="${ci.key}">${ci.value}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
                                     <div class="col-lg-3 col-md-6">
                                         <label class="form-label search-label">
-                                            <i class="bi bi-cash-stack me-1"></i> Operacion
+                                            <i class="bi bi-search me-1"></i> Palabra clave
                                         </label>
-                                        <select name="operacion" class="form-select search-select">
-                                            <option value="" selected>Todas</option>
-                                            <c:forEach var="operacion" items="${operaciones}">
-                                                <option value="${operacion.valor}">${operacion.etiqueta}</option>
-                                            </c:forEach>
-                                        </select>
+                                        <input type="text" name="q" class="form-control search-select"
+                                               placeholder="Ej: casa, balcon, piscina...">
                                     </div>
                                     <div class="col-lg-3 col-md-6">
                                         <button type="submit" class="btn btn-gold btn-search w-100">
@@ -283,196 +280,66 @@
             </div>
 
             <div class="row g-4">
-                <!-- Propiedad 1 -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="property-card">
-                        <div class="property-image">
-                            <div class="property-img-placeholder">
-                                <i class="bi bi-house-door"></i>
-                            </div>
-                            <span class="property-badge badge-venta">Venta</span>
-                            <div class="property-actions-top">
-                                <button class="btn-action" aria-label="Favorito">
-                                    <i class="bi bi-heart"></i>
-                                </button>
+                <c:choose>
+                    <c:when test="${empty propiedadesDestacadas}">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center py-5 text-muted">
+                                    <i class="bi bi-house-door fs-1 d-block mb-2"></i>
+                                    Aun no hay propiedades publicadas. Vuelve pronto.
+                                </div>
                             </div>
                         </div>
-                        <div class="property-body">
-                            <div class="property-price">$320.000.000</div>
-                            <h5 class="property-title">Casa Campestre El Limon</h5>
-                            <p class="property-location">
-                                <i class="bi bi-geo-alt me-1"></i> Bucaramanga, Santander
-                            </p>
-                            <div class="property-features">
-                                <span><i class="bi bi-door-open me-1"></i> 3 Habitaciones</span>
-                                <span><i class="bi bi-droplet me-1"></i> 2 Banos</span>
-                                <span><i class="bi bi-aspect-ratio me-1"></i> 180 m&sup2;</span>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="p" items="${propiedadesDestacadas}">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="property-card">
+                                    <div class="property-image">
+                                        <c:choose>
+                                            <c:when test="${not empty imagenesPrincipales[p.idPropiedad]}">
+                                                <img src="${imagenesPrincipales[p.idPropiedad]}"
+                                                     alt="${p.titulo}"
+                                                     style="width:100%; height:220px; object-fit:cover;"
+                                                     onerror="this.style.display='none'">
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="property-img-placeholder">
+                                                    <i class="bi bi-house-door"></i>
+                                                </div>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <span class="property-badge badge-venta">${p.nombreTipo}</span>
+                                    </div>
+                                    <div class="property-body">
+                                        <div class="property-price">
+                                            <fmt:formatNumber value="${p.precio}" type="currency"
+                                                              currencySymbol="$" maxFractionDigits="0"/>
+                                        </div>
+                                        <h5 class="property-title">${p.titulo}</h5>
+                                        <p class="property-location">
+                                            <i class="bi bi-geo-alt me-1"></i> ${p.nombreCiudad}, Santander
+                                        </p>
+                                        <div class="property-features">
+                                            <span><i class="bi bi-door-open me-1"></i> ${p.habitaciones} Habitaciones</span>
+                                            <span><i class="bi bi-droplet me-1"></i> ${p.banos} Banos</span>
+                                            <span><i class="bi bi-aspect-ratio me-1"></i> ${p.areaM2} m&sup2;</span>
+                                        </div>
+                                        <a href="${pageContext.request.contextPath}/propiedad?id=${p.idPropiedad}"
+                                           class="btn btn-gold-outline w-100 mt-3">
+                                            <i class="bi bi-eye me-2"></i> Ver Detalle
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <a href="${pageContext.request.contextPath}/propiedad?id=1" class="btn btn-gold-outline w-100 mt-3">
-                                <i class="bi bi-eye me-2"></i> Ver Detalle
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
 
-                <!-- Propiedad 2 -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="property-card">
-                        <div class="property-image">
-                            <div class="property-img-placeholder">
-                                <i class="bi bi-building"></i>
-                            </div>
-                            <span class="property-badge badge-arriendo">Arriendo</span>
-                            <div class="property-actions-top">
-                                <button class="btn-action" aria-label="Favorito">
-                                    <i class="bi bi-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="property-body">
-                            <div class="property-price">$1.800.000 <small>/mes</small></div>
-                            <h5 class="property-title">Apartamento Centro Norte</h5>
-                            <p class="property-location">
-                                <i class="bi bi-geo-alt me-1"></i> Floridablanca, Santander
-                            </p>
-                            <div class="property-features">
-                                <span><i class="bi bi-door-open me-1"></i> 2 Habitaciones</span>
-                                <span><i class="bi bi-droplet me-1"></i> 2 Banos</span>
-                                <span><i class="bi bi-aspect-ratio me-1"></i> 85 m&sup2;</span>
-                            </div>
-                            <a href="${pageContext.request.contextPath}/propiedad?id=2" class="btn btn-gold-outline w-100 mt-3">
-                                <i class="bi bi-eye me-2"></i> Ver Detalle
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Propiedad 3 -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="property-card">
-                        <div class="property-image">
-                            <div class="property-img-placeholder">
-                                <i class="bi bi-shop"></i>
-                            </div>
-                            <span class="property-badge badge-venta">Venta</span>
-                            <div class="property-actions-top">
-                                <button class="btn-action" aria-label="Favorito">
-                                    <i class="bi bi-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="property-body">
-                            <div class="property-price">$450.000.000</div>
-                            <h5 class="property-title">Local Comercial Cabecera</h5>
-                            <p class="property-location">
-                                <i class="bi bi-geo-alt me-1"></i> Bucaramanga, Santander
-                            </p>
-                            <div class="property-features">
-                                <span><i class="bi bi-door-open me-1"></i> 2 Ambientes</span>
-                                <span><i class="bi bi-droplet me-1"></i> 1 Ba&ntilde;o</span>
-                                <span><i class="bi bi-aspect-ratio me-1"></i> 120 m&sup2;</span>
-                            </div>
-                            <a href="${pageContext.request.contextPath}/propiedad?id=3" class="btn btn-gold-outline w-100 mt-3">
-                                <i class="bi bi-eye me-2"></i> Ver Detalle
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Propiedad 4 -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="property-card">
-                        <div class="property-image">
-                            <div class="property-img-placeholder">
-                                <i class="bi bi-building"></i>
-                            </div>
-                            <span class="property-badge badge-venta">Venta</span>
-                            <div class="property-actions-top">
-                                <button class="btn-action" aria-label="Favorito">
-                                    <i class="bi bi-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="property-body">
-                            <div class="property-price">$275.000.000</div>
-                            <h5 class="property-title">Apartamento Provenza</h5>
-                            <p class="property-location">
-                                <i class="bi bi-geo-alt me-1"></i> Bucaramanga, Santander
-                            </p>
-                            <div class="property-features">
-                                <span><i class="bi bi-door-open me-1"></i> 3 Habitaciones</span>
-                                <span><i class="bi bi-droplet me-1"></i> 2 Banos</span>
-                                <span><i class="bi bi-aspect-ratio me-1"></i> 95 m&sup2;</span>
-                            </div>
-                            <a href="${pageContext.request.contextPath}/propiedad?id=4" class="btn btn-gold-outline w-100 mt-3">
-                                <i class="bi bi-eye me-2"></i> Ver Detalle
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Propiedad 5 -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="property-card">
-                        <div class="property-image">
-                            <div class="property-img-placeholder">
-                                <i class="bi bi-house-door"></i>
-                            </div>
-                            <span class="property-badge badge-arriendo">Arriendo</span>
-                            <div class="property-actions-top">
-                                <button class="btn-action" aria-label="Favorito">
-                                    <i class="bi bi-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="property-body">
-                            <div class="property-price">$2.500.000 <small>/mes</small></div>
-                            <h5 class="property-title">Oficina Torre Empresarial</h5>
-                            <p class="property-location">
-                                <i class="bi bi-geo-alt me-1"></i> Gir&oacute;n, Santander
-                            </p>
-                            <div class="property-features">
-                                <span><i class="bi bi-door-open me-1"></i> 4 Espacios</span>
-                                <span><i class="bi bi-droplet me-1"></i> 2 Banos</span>
-                                <span><i class="bi bi-aspect-ratio me-1"></i> 150 m&sup2;</span>
-                            </div>
-                            <a href="${pageContext.request.contextPath}/propiedad?id=5" class="btn btn-gold-outline w-100 mt-3">
-                                <i class="bi bi-eye me-2"></i> Ver Detalle
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Propiedad 6 -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="property-card">
-                        <div class="property-image">
-                            <div class="property-img-placeholder">
-                                <i class="bi bi-pin-map"></i>
-                            </div>
-                            <span class="property-badge badge-venta">Venta</span>
-                            <div class="property-actions-top">
-                                <button class="btn-action" aria-label="Favorito">
-                                    <i class="bi bi-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="property-body">
-                            <div class="property-price">$180.000.000</div>
-                            <h5 class="property-title">Terreno Urbanizado Picota</h5>
-                            <p class="property-location">
-                                <i class="bi bi-geo-alt me-1"></i> Piedecuesta, Santander
-                            </p>
-                            <div class="property-features">
-                                <span><i class="bi bi-door-open me-1"></i> Libre</span>
-                                <span><i class="bi bi-droplet me-1"></i> Servicios</span>
-                                <span><i class="bi bi-aspect-ratio me-1"></i> 300 m&sup2;</span>
-                            </div>
-                            <a href="${pageContext.request.contextPath}/propiedad?id=6" class="btn btn-gold-outline w-100 mt-3">
-                                <i class="bi bi-eye me-2"></i> Ver Detalle
-                            </a>
-                        </div>
-                    </div>
+                <div class="col-12 text-center mt-4">
+                    <a href="${pageContext.request.contextPath}/buscar" class="btn btn-gold btn-lg px-5">
+                        <i class="bi bi-collection me-2"></i> Ver todo el catalogo
+                    </a>
                 </div>
             </div>
         </div>

@@ -116,13 +116,26 @@ public class PropiedadDAO {
      * @throws SQLException si ocurre un error (incluye duplicados UNIQUE)
      */
     public boolean insertar(Propiedad p) throws SQLException {
+        return insertarYRetornarId(p) > 0;
+    }
+
+    /**
+     * Inserta una nueva propiedad y retorna el ID generado.
+     * Necesario para asociar caracteristicas (N:M) e imagenes (1:N)
+     * en el mismo flujo de registro.
+     *
+     * @param p Propiedad a insertar
+     * @return ID generado, o -1 si no se pudo obtener
+     * @throws SQLException si ocurre un error (incluye duplicados UNIQUE)
+     */
+    public int insertarYRetornarId(Propiedad p) throws SQLException {
         String sql = "INSERT INTO propiedad "
                 + "(matricula_inmobiliaria, titulo, descripcion, precio, habitaciones, banos, "
                 + "area_m2, direccion, estado_logico, id_inmobiliaria, id_tipo, id_ciudad, fecha_publicacion) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE, ?, ?, ?, NOW())";
 
         try (Connection conn = ConexionDB.obtenerConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, p.getMatriculaInmobiliaria());
             ps.setString(2, p.getTitulo());
@@ -136,7 +149,16 @@ public class PropiedadDAO {
             ps.setInt(10, p.getIdTipo());
             ps.setInt(11, p.getIdCiudad());
 
-            return ps.executeUpdate() > 0;
+            if (ps.executeUpdate() == 0) {
+                return -1;
+            }
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+            return -1;
         }
     }
 
@@ -234,6 +256,72 @@ public class PropiedadDAO {
             }
         }
         return ciudades;
+    }
+
+    /**
+     * Busca propiedades activas aplicando filtros dinamicos opcionales.
+     * Construye la clausula WHERE dinamicamente con PreparedStatement,
+     * garantizando que los valores siempre vayan parametrizados.
+     *
+     * @param idCiudad  Filtro por ciudad (0 o null = sin filtro)
+     * @param idTipo    Filtro por tipo (0 o null = sin filtro)
+     * @param precioMin Precio minimo (null = sin filtro)
+     * @param precioMax Precio maximo (null = sin filtro)
+     * @param palabra   Palabra clave en titulo/descripcion (null o vacio = sin filtro)
+     * @return Lista de propiedades activas que cumplen los filtros
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public List<Propiedad> buscarConFiltros(Integer idCiudad, Integer idTipo,
+                                            java.math.BigDecimal precioMin,
+                                            java.math.BigDecimal precioMax,
+                                            String palabra) throws SQLException {
+
+        StringBuilder sql = new StringBuilder(SELECT_BASE);
+        sql.append("WHERE p.estado_logico = TRUE ");
+
+        List<Object> parametros = new ArrayList<>();
+
+        if (idCiudad != null && idCiudad > 0) {
+            sql.append("AND p.id_ciudad = ? ");
+            parametros.add(idCiudad);
+        }
+        if (idTipo != null && idTipo > 0) {
+            sql.append("AND p.id_tipo = ? ");
+            parametros.add(idTipo);
+        }
+        if (precioMin != null) {
+            sql.append("AND p.precio >= ? ");
+            parametros.add(precioMin);
+        }
+        if (precioMax != null) {
+            sql.append("AND p.precio <= ? ");
+            parametros.add(precioMax);
+        }
+        if (palabra != null && !palabra.trim().isEmpty()) {
+            sql.append("AND (p.titulo LIKE ? OR p.descripcion LIKE ?) ");
+            String like = "%" + palabra.trim() + "%";
+            parametros.add(like);
+            parametros.add(like);
+        }
+
+        sql.append("ORDER BY p.fecha_publicacion DESC");
+
+        List<Propiedad> lista = new ArrayList<>();
+
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < parametros.size(); i++) {
+                ps.setObject(i + 1, parametros.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapear(rs));
+                }
+            }
+        }
+        return lista;
     }
 
     /**

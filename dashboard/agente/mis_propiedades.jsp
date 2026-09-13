@@ -4,41 +4,17 @@
 <c:if test="${empty sessionScope.idUsuario}">
     <c:redirect url="${pageContext.request.contextPath}/LoginServlet"/>
 </c:if>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Propiedades - Inmobiliaria UTS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/assets/css/styles.css" rel="stylesheet">
-    <style>
-        .dashboard-nav { background: #0B2545; padding: 0.75rem 0; }
-        .page-header { padding: 2.5rem 0 1.5rem; }
-        .table-card { border: none; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
-        .table thead th { background: #0B2545; color: #fff; font-weight: 600; white-space: nowrap; }
-        .badge-tipo { background: rgba(184,134,11,0.15); color: var(--gold-dark); font-weight: 600; }
-    </style>
-</head>
-<body style="background:#F8F9FA;">
+<c:set var="tituloPagina" value="Mis Propiedades - Inmobiliaria UTS" scope="request"/>
+<%@ include file="/includes/header.jsp"%>
 
-    <nav class="dashboard-nav">
-        <div class="container d-flex justify-content-between align-items-center">
-            <a href="${pageContext.request.contextPath}/dashboard/agente/index.jsp"
-               class="text-white fw-bold text-decoration-none" style="font-family:'Playfair Display',serif;">
-                <i class="bi bi-buildings-fill me-2" style="color:var(--gold);"></i>
-                Inmobiliaria <span style="color:var(--gold);">UTS</span>
-                <span class="badge bg-primary ms-2">INMOBILIARIA</span>
-            </a>
-            <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesion
-            </a>
-        </div>
-    </nav>
+<style>
+    .page-header { padding: 2rem 0 1.5rem; }
+    .table-card { border: none; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+    .table thead th { background: #0B2545; color: #fff; font-weight: 600; white-space: nowrap; }
+    .badge-tipo { background: rgba(184,134,11,0.15); color: var(--gold-dark); font-weight: 600; }
+</style>
 
-    <div class="container page-header">
+    <div class="container" style="padding-top:120px;">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
                 <h2 class="mb-1" style="color:#0B2545;">
@@ -112,6 +88,10 @@
                                             <td class="text-center">${p.banos}</td>
                                             <td class="text-center">${p.areaM2}</td>
                                             <td class="text-center" style="white-space:nowrap;">
+                                                <a href="${pageContext.request.contextPath}/PropiedadServlet?action=galeria&id=${p.idPropiedad}"
+                                                   class="btn btn-sm btn-outline-secondary" title="Galeria de imagenes">
+                                                    <i class="bi bi-images"></i>
+                                                </a>
                                                 <a href="${pageContext.request.contextPath}/PropiedadServlet?action=edit&id=${p.idPropiedad}"
                                                    class="btn btn-sm btn-outline-primary" title="Editar">
                                                     <i class="bi bi-pencil-square"></i>

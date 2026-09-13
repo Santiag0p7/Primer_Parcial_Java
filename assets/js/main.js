@@ -1,17 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Navbar scroll effect
-    const nav = document.getElementById('mainNav');
-    function handleNavScroll() {
-        if (window.scrollY > 50) {
-            nav.classList.add('scrolled');
-        } else {
-            nav.classList.remove('scrolled');
-        }
-    }
-    window.addEventListener('scroll', handleNavScroll);
-    handleNavScroll();
-
     // Active nav link on scroll
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');

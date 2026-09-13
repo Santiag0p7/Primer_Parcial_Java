@@ -66,6 +66,36 @@
         <url-pattern>/PropiedadServlet</url-pattern>
     </servlet-mapping>
 
+    <!-- Ficha de detalle publica de una propiedad -->
+    <servlet-mapping>
+        <servlet-name>PropiedadServlet</servlet-name>
+        <url-pattern>/propiedad</url-pattern>
+    </servlet-mapping>
+
+    <!-- Gestion del Perfil de Usuario (relacion 1:1) - Sprint 2 -->
+    <servlet>
+        <servlet-name>PerfilServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.PerfilServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PerfilServlet</servlet-name>
+        <url-pattern>/PerfilServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- Buscador / Catalogo publico de propiedades -->
+    <servlet>
+        <servlet-name>BuscarPropiedadesServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.BuscarPropiedadesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BuscarPropiedadesServlet</servlet-name>
+        <url-pattern>/buscar</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BuscarPropiedadesServlet</servlet-name>
+        <url-pattern>/catalogo</url-pattern>
+    </servlet-mapping>
+
     <!-- ==========================================
          FILTROS - Seguridad
          ========================================== -->

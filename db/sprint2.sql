@@ -56,3 +56,58 @@ INSERT INTO ciudad (id_ciudad, nombre) VALUES
 (3, 'Giron'),
 (4, 'Piedecuesta')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
+
+-- ============================================================
+-- ITEM 2: GALERIA DE IMAGENES (1:N) Y CARACTERISTICAS (N:M)
+-- ============================================================
+
+-- 4. TABLA: IMAGEN_PROPIEDAD (Relacion 1:N con propiedad)
+CREATE TABLE IF NOT EXISTS imagen_propiedad (
+    id_imagen INT AUTO_INCREMENT PRIMARY KEY,
+    id_propiedad INT NOT NULL,
+    url_imagen VARCHAR(500) NOT NULL,
+    es_principal BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_propiedad) REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- 5. TABLA: CARACTERISTICA (catalogo general reutilizable)
+CREATE TABLE IF NOT EXISTS caracteristica (
+    id_caracteristica INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(80) NOT NULL UNIQUE
+);
+
+-- 6. TABLA INTERMEDIA N:M: PROPIEDAD_CARACTERISTICA
+CREATE TABLE IF NOT EXISTS propiedad_caracteristica (
+    id_propiedad INT NOT NULL,
+    id_caracteristica INT NOT NULL,
+    PRIMARY KEY (id_propiedad, id_caracteristica),
+    FOREIGN KEY (id_propiedad) REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_caracteristica) REFERENCES caracteristica(id_caracteristica) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- ============================================================
+-- INSERCIONES DEL CATALOGO DE CARACTERISTICAS
+-- ============================================================
+
+INSERT INTO caracteristica (id_caracteristica, nombre) VALUES
+(1, 'Piscina'),
+(2, 'Parqueadero'),
+(3, 'Ascensor'),
+(4, 'Gimnasio'),
+(5, 'Vigilancia 24/7'),
+(6, 'Zona Verde'),
+(7, 'Balcon'),
+(8, 'Amoblado'),
+(9, 'Aire Acondicionado'),
+(10, 'Terraza')
+ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
+
+-- ============================================================
+-- ITEM 4: GESTION DEL PERFIL DE USUARIO (Relacion 1:1)
+-- Agrega la marca de tiempo de ultima actualizacion del perfil.
+-- (Si la columna ya existe, MariaDB ignora la sentencia)
+-- ============================================================
+
+ALTER TABLE perfil
+    ADD COLUMN IF NOT EXISTS fecha_actualizacion DATETIME
+        DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
