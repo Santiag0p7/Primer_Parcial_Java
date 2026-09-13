@@ -129,13 +129,27 @@ public class PropiedadDAO {
      * @throws SQLException si ocurre un error (incluye duplicados UNIQUE)
      */
     public int insertarYRetornarId(Propiedad p) throws SQLException {
+        try (Connection conn = ConexionDB.obtenerConexion()) {
+            return insertarYRetornarId(conn, p);
+        }
+    }
+
+    /**
+     * Variante que recibe una conexion existente para participar en una
+     * transaccion coordinada por la capa controladora. NO cierra la conexion.
+     *
+     * @param conn Conexion JDBC suministrada por el llamador
+     * @param p    Propiedad a insertar
+     * @return ID generado, o -1 si no se pudo obtener
+     * @throws SQLException si ocurre un error (incluye duplicados UNIQUE)
+     */
+    public int insertarYRetornarId(Connection conn, Propiedad p) throws SQLException {
         String sql = "INSERT INTO propiedad "
                 + "(matricula_inmobiliaria, titulo, descripcion, precio, habitaciones, banos, "
                 + "area_m2, direccion, estado_logico, id_inmobiliaria, id_tipo, id_ciudad, fecha_publicacion) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE, ?, ?, ?, NOW())";
 
-        try (Connection conn = ConexionDB.obtenerConexion();
-             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, p.getMatriculaInmobiliaria());
             ps.setString(2, p.getTitulo());
@@ -171,14 +185,28 @@ public class PropiedadDAO {
      * @throws SQLException si ocurre un error (incluye duplicados UNIQUE)
      */
     public boolean actualizar(Propiedad p) throws SQLException {
+        try (Connection conn = ConexionDB.obtenerConexion()) {
+            return actualizar(conn, p);
+        }
+    }
+
+    /**
+     * Variante que recibe una conexion existente para participar en una
+     * transaccion coordinada por la capa controladora. NO cierra la conexion.
+     *
+     * @param conn Conexion JDBC suministrada por el llamador
+     * @param p    Propiedad con los datos actualizados (debe incluir idPropiedad)
+     * @return true si se actualizo al menos un registro
+     * @throws SQLException si ocurre un error (incluye duplicados UNIQUE)
+     */
+    public boolean actualizar(Connection conn, Propiedad p) throws SQLException {
         String sql = "UPDATE propiedad SET "
                 + "matricula_inmobiliaria = ?, titulo = ?, descripcion = ?, precio = ?, "
                 + "habitaciones = ?, banos = ?, area_m2 = ?, direccion = ?, "
                 + "id_tipo = ?, id_ciudad = ? "
                 + "WHERE id_propiedad = ?";
 
-        try (Connection conn = ConexionDB.obtenerConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, p.getMatriculaInmobiliaria());
             ps.setString(2, p.getTitulo());

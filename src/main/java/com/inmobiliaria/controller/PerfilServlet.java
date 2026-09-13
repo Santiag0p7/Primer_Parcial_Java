@@ -41,7 +41,14 @@ public class PerfilServlet extends HttpServlet {
             return;
         }
 
-        Perfil perfil = perfilDAO.obtenerPorIdUsuario(idUsuario);
+        Perfil perfil;
+        try {
+            perfil = perfilDAO.obtenerPorIdUsuario(idUsuario);
+        } catch (SQLException e) {
+            request.setAttribute("error", "No se pudo cargar su perfil. Intente nuevamente.");
+            perfil = new Perfil();
+            perfil.setIdUsuario(idUsuario);
+        }
         request.setAttribute("perfil", perfil);
 
         // Mensaje de exito tras una actualizacion (patron Post/Redirect/Get)

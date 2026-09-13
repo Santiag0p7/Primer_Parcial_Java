@@ -25,10 +25,11 @@ public class PerfilDAO {
      *
      * @param idUsuario ID del usuario en sesion
      * @return Objeto Perfil si existe, null si el usuario no tiene perfil
+     * @throws SQLException si ocurre un error de acceso a datos
      */
-    public Perfil obtenerPorIdUsuario(int idUsuario) {
+    public Perfil obtenerPorIdUsuario(int idUsuario) throws SQLException {
         String sql = "SELECT id_perfil, id_usuario, nombres, apellidos, documento, "
-                + "telefono, direccion, fecha_actualizacion "
+                + "telefono, direccion, foto_url, fecha_actualizacion "
                 + "FROM perfil WHERE id_usuario = ?";
 
         Connection conn = null;
@@ -50,6 +51,7 @@ public class PerfilDAO {
                 perfil.setDocumento(rs.getString("documento"));
                 perfil.setTelefono(rs.getString("telefono"));
                 perfil.setDireccion(rs.getString("direccion"));
+                perfil.setFotoUrl(rs.getString("foto_url"));
 
                 Timestamp fecha = rs.getTimestamp("fecha_actualizacion");
                 if (fecha != null) {
@@ -58,8 +60,6 @@ public class PerfilDAO {
                 return perfil;
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         } finally {
             if (rs != null) try { rs.close(); } catch (SQLException ignored) {}
             if (ps != null) try { ps.close(); } catch (SQLException ignored) {}

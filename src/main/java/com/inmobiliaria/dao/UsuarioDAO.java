@@ -128,7 +128,10 @@ public class UsuarioDAO {
                 usuario.setCorreo(rs.getString("correo"));
                 usuario.setPasswordHash(rs.getString("password_hash"));
                 usuario.setEstado(rs.getBoolean("estado"));
-                usuario.setFechaRegistro(rs.getTimestamp("fecha_registro").toLocalDateTime());
+                Timestamp fechaRegistro = rs.getTimestamp("fecha_registro");
+                if (fechaRegistro != null) {
+                    usuario.setFechaRegistro(fechaRegistro.toLocalDateTime());
+                }
                 return usuario;
             }
 

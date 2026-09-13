@@ -1,5 +1,5 @@
-
-<footer class="footer-section">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<footer class="footer-section" id="contacto">
     <div class="container">
         <div class="row g-4 mb-5">
             <div class="col-lg-4 col-md-6">
@@ -32,21 +32,28 @@
             <div class="col-lg-2 col-md-6">
                 <h5 class="footer-title">Enlaces Rapidos</h5>
                 <ul class="footer-links">
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#nosotros">Nosotros</a></li>
-                    <li><a href="#servicios">Servicios</a></li>
-                    <li><a href="#propiedades">Propiedades</a></li>
-                    <li><a href="${pageContext.request.contextPath}/LoginServlet">Iniciar Sesion</a></li>
+                    <li><a href="${pageContext.request.contextPath}/index#inicio">Inicio</a></li>
+                    <li><a href="${pageContext.request.contextPath}/index#nosotros">Nosotros</a></li>
+                    <li><a href="${pageContext.request.contextPath}/index#servicios">Servicios</a></li>
+                    <li><a href="${pageContext.request.contextPath}/index#propiedades">Propiedades</a></li>
+                    <c:choose>
+                        <c:when test="${empty sessionScope.idUsuario}">
+                            <li><a href="${pageContext.request.contextPath}/LoginServlet">Iniciar Sesion</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li><a href="${pageContext.request.contextPath}/PerfilServlet">Mi Perfil</a></li>
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
             </div>
 
             <div class="col-lg-3 col-md-6">
                 <h5 class="footer-title">Servicios</h5>
                 <ul class="footer-links">
-                    <li><a href="#servicios"><i class="bi bi-check2 me-2"></i>Asesoria Inmobiliaria</a></li>
-                    <li><a href="#servicios"><i class="bi bi-check2 me-2"></i>Avaluos Profesionales</a></li>
-                    <li><a href="#servicios"><i class="bi bi-check2 me-2"></i>Gestion de tramites</a></li>
-                    <li><a href="#servicios"><i class="bi bi-check2 me-2"></i>Agendamiento de Citas</a></li>
+                    <li><a href="${pageContext.request.contextPath}/index#servicios"><i class="bi bi-check2 me-2"></i>Asesoria Inmobiliaria</a></li>
+                    <li><a href="${pageContext.request.contextPath}/index#servicios"><i class="bi bi-check2 me-2"></i>Avaluos Profesionales</a></li>
+                    <li><a href="${pageContext.request.contextPath}/index#servicios"><i class="bi bi-check2 me-2"></i>Gestion de tramites</a></li>
+                    <li><a href="${pageContext.request.contextPath}/index#servicios"><i class="bi bi-check2 me-2"></i>Agendamiento de Citas</a></li>
                 </ul>
             </div>
 

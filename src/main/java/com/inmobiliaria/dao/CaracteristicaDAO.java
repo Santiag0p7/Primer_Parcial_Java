@@ -110,52 +110,56 @@ public class CaracteristicaDAO {
     public void actualizarCaracteristicasPropiedad(int idPropiedad, List<Integer> idsCaracteristicas)
             throws SQLException {
 
+        try (Connection conn = ConexionDB.obtenerConexion()) {
+            boolean autoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false); // Iniciar transaccion
+            try {
+                actualizarCaracteristicasPropiedad(conn, idPropiedad, idsCaracteristicas);
+                conn.commit(); // Confirmar transaccion
+            } catch (SQLException e) {
+                conn.rollback(); // Revertir ante error
+                throw e;
+            } finally {
+                conn.setAutoCommit(autoCommit);
+            }
+        }
+    }
+
+    /**
+     * Variante que recibe una conexion existente para participar en una
+     * transaccion coordinada externamente (ej: alta completa de propiedad).
+     * NO inicia, confirma ni revierte la transaccion, y NO cierra la conexion.
+     *
+     * @param conn               Conexion JDBC suministrada por el llamador
+     * @param idPropiedad        ID de la propiedad
+     * @param idsCaracteristicas IDs seleccionados (puede ser null o vacio)
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public void actualizarCaracteristicasPropiedad(Connection conn, int idPropiedad,
+                                                   List<Integer> idsCaracteristicas)
+            throws SQLException {
+
         String sqlDelete = "DELETE FROM propiedad_caracteristica WHERE id_propiedad = ?";
         String sqlInsert = "INSERT INTO propiedad_caracteristica (id_propiedad, id_caracteristica) "
                 + "VALUES (?, ?)";
 
-        Connection conn = null;
-        try {
-            conn = ConexionDB.obtenerConexion();
-            conn.setAutoCommit(false); // Iniciar transaccion
+        // 1. Eliminar relaciones previas
+        try (PreparedStatement psDel = conn.prepareStatement(sqlDelete)) {
+            psDel.setInt(1, idPropiedad);
+            psDel.executeUpdate();
+        }
 
-            // 1. Eliminar relaciones previas
-            try (PreparedStatement psDel = conn.prepareStatement(sqlDelete)) {
-                psDel.setInt(1, idPropiedad);
-                psDel.executeUpdate();
-            }
-
-            // 2. Insercion masiva de las nuevas relaciones
-            if (idsCaracteristicas != null && !idsCaracteristicas.isEmpty()) {
-                try (PreparedStatement psIns = conn.prepareStatement(sqlInsert)) {
-                    for (Integer idCar : idsCaracteristicas) {
-                        if (idCar != null) {
-                            psIns.setInt(1, idPropiedad);
-                            psIns.setInt(2, idCar);
-                            psIns.addBatch();
-                        }
+        // 2. Insercion masiva de las nuevas relaciones
+        if (idsCaracteristicas != null && !idsCaracteristicas.isEmpty()) {
+            try (PreparedStatement psIns = conn.prepareStatement(sqlInsert)) {
+                for (Integer idCar : idsCaracteristicas) {
+                    if (idCar != null) {
+                        psIns.setInt(1, idPropiedad);
+                        psIns.setInt(2, idCar);
+                        psIns.addBatch();
                     }
-                    psIns.executeBatch();
                 }
-            }
-
-            conn.commit(); // Confirmar transaccion
-
-        } catch (SQLException e) {
-            if (conn != null) {
-                try {
-                    conn.rollback(); // Revertir ante error
-                } catch (SQLException ignored) {
-                }
-            }
-            throw e;
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException ignored) {
-                }
-                ConexionDB.cerrar(conn);
+                psIns.executeBatch();
             }
         }
     }

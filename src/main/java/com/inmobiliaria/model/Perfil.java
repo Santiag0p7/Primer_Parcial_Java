@@ -21,6 +21,7 @@ public class Perfil implements Serializable {
     private String documento;
     private String telefono;
     private String direccion;
+    private String fotoUrl;
     private LocalDateTime fechaActualizacion;
 
     // Constructor vacio
@@ -96,6 +97,14 @@ public class Perfil implements Serializable {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 
     public LocalDateTime getFechaActualizacion() {

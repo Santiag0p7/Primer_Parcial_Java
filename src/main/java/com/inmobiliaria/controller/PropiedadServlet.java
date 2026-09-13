@@ -5,6 +5,7 @@ import com.inmobiliaria.dao.ImagenPropiedadDAO;
 import com.inmobiliaria.dao.PropiedadDAO;
 import com.inmobiliaria.model.ImagenPropiedad;
 import com.inmobiliaria.model.Propiedad;
+import com.inmobiliaria.util.ConexionDB;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,11 @@ public class PropiedadServlet extends HttpServlet {
             }
         }
 
+        // El detalle es publico; el resto del CRUD es exclusivo del rol INMOBILIARIA
+        if (!"detail".equals(action) && !verificarAccesoAgente(request, response)) {
+            return;
+        }
+
         try {
             switch (action) {
                 case "new":
@@ -94,6 +101,11 @@ public class PropiedadServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null) {
             action = "list";
+        }
+
+        // Toda accion POST del CRUD exige rol INMOBILIARIA
+        if (!verificarAccesoAgente(request, response)) {
+            return;
         }
 
         try {
@@ -179,9 +191,9 @@ public class PropiedadServlet extends HttpServlet {
 
         Propiedad propiedad = propiedadDAO.obtenerPorId(id);
 
-        if (propiedad == null) {
+        if (!esPropietario(propiedad, request)) {
             request.getSession().setAttribute("mensajeError",
-                    "La propiedad solicitada no existe.");
+                    "La propiedad solicitada no existe o no tiene permisos sobre ella.");
             response.sendRedirect(request.getContextPath() + "/PropiedadServlet?action=list");
             return;
         }
@@ -200,19 +212,13 @@ public class PropiedadServlet extends HttpServlet {
         Propiedad p = construirDesdeRequest(request);
 
         try {
-            int idGenerado = propiedadDAO.insertarYRetornarId(p);
+            // Alta atomica: propiedad + caracteristicas (N:M) + galeria (1:N)
+            int idGenerado = insertarPropiedadCompleta(p,
+                    obtenerCaracteristicas(request),
+                    parseUrlsAdicionales(request.getParameter("urlsImagenes")),
+                    trim(request.getParameter("urlPrincipal")));
 
             if (idGenerado > 0) {
-                // Relacion N:M (caracteristicas) con transaccion interna
-                caracteristicaDAO.actualizarCaracteristicasPropiedad(
-                        idGenerado, obtenerCaracteristicas(request));
-
-                // Galeria de imagenes (1:N) con transaccion interna
-                String urlPrincipal = trim(request.getParameter("urlPrincipal"));
-                imagenDAO.reemplazarGaleria(idGenerado,
-                        parseUrlsAdicionales(request.getParameter("urlsImagenes")),
-                        urlPrincipal);
-
                 request.getSession().setAttribute("mensajeExito",
                         "Propiedad registrada correctamente.");
                 response.sendRedirect(request.getContextPath() + "/PropiedadServlet?action=list");
@@ -242,23 +248,26 @@ public class PropiedadServlet extends HttpServlet {
             return;
         }
 
+        // Control de propiedad: solo el dueño puede modificar la publicacion
+        Propiedad existente = propiedadDAO.obtenerPorId(id);
+        if (!esPropietario(existente, request)) {
+            request.getSession().setAttribute("mensajeError",
+                    "No tiene permisos para editar esta propiedad.");
+            response.sendRedirect(request.getContextPath() + "/PropiedadServlet?action=list");
+            return;
+        }
+
         Propiedad p = construirDesdeRequest(request);
         p.setIdPropiedad(id);
 
         try {
-            boolean ok = propiedadDAO.actualizar(p);
+            // Actualizacion atomica: propiedad + caracteristicas (N:M) + galeria (1:N)
+            boolean ok = actualizarPropiedadCompleta(p,
+                    obtenerCaracteristicas(request),
+                    parseUrlsAdicionales(request.getParameter("urlsImagenes")),
+                    trim(request.getParameter("urlPrincipal")));
 
             if (ok) {
-                // Actualizar relacion N:M de caracteristicas
-                caracteristicaDAO.actualizarCaracteristicasPropiedad(
-                        id, obtenerCaracteristicas(request));
-
-                // Actualizar galeria de imagenes (1:N)
-                String urlPrincipal = trim(request.getParameter("urlPrincipal"));
-                imagenDAO.reemplazarGaleria(id,
-                        parseUrlsAdicionales(request.getParameter("urlsImagenes")),
-                        urlPrincipal);
-
                 request.getSession().setAttribute("mensajeExito",
                         "Propiedad actualizada correctamente.");
                 response.sendRedirect(request.getContextPath() + "/PropiedadServlet?action=list");
@@ -283,11 +292,18 @@ public class PropiedadServlet extends HttpServlet {
         int id = parseEntero(request.getParameter("id"), 0);
 
         if (id > 0) {
-            boolean ok = propiedadDAO.bajaLogica(id);
-            request.getSession().setAttribute(
-                    ok ? "mensajeExito" : "mensajeError",
-                    ok ? "Propiedad desactivada correctamente."
-                       : "No se pudo desactivar la propiedad.");
+            Propiedad propiedad = propiedadDAO.obtenerPorId(id);
+
+            if (!esPropietario(propiedad, request)) {
+                request.getSession().setAttribute("mensajeError",
+                        "No tiene permisos para desactivar esta propiedad.");
+            } else {
+                boolean ok = propiedadDAO.bajaLogica(id);
+                request.getSession().setAttribute(
+                        ok ? "mensajeExito" : "mensajeError",
+                        ok ? "Propiedad desactivada correctamente."
+                           : "No se pudo desactivar la propiedad.");
+            }
         }
 
         response.sendRedirect(request.getContextPath() + "/PropiedadServlet?action=list");
@@ -339,9 +355,9 @@ public class PropiedadServlet extends HttpServlet {
 
         Propiedad propiedad = propiedadDAO.obtenerPorId(id);
 
-        if (propiedad == null) {
+        if (!esPropietario(propiedad, request)) {
             request.getSession().setAttribute("mensajeError",
-                    "La propiedad solicitada no existe.");
+                    "La propiedad solicitada no existe o no tiene permisos sobre ella.");
             response.sendRedirect(request.getContextPath() + "/PropiedadServlet?action=list");
             return;
         }
@@ -364,16 +380,23 @@ public class PropiedadServlet extends HttpServlet {
         boolean esPrincipal = "true".equals(request.getParameter("esPrincipal"));
 
         if (idPropiedad > 0 && !url.isEmpty()) {
-            ImagenPropiedad img = new ImagenPropiedad();
-            img.setIdPropiedad(idPropiedad);
-            img.setUrlImagen(url);
-            img.setEsPrincipal(esPrincipal);
+            Propiedad propiedad = propiedadDAO.obtenerPorId(idPropiedad);
 
-            boolean ok = imagenDAO.insertar(img);
-            request.getSession().setAttribute(
-                    ok ? "mensajeExito" : "mensajeError",
-                    ok ? "Imagen agregada correctamente."
-                       : "No se pudo agregar la imagen.");
+            if (!esPropietario(propiedad, request)) {
+                request.getSession().setAttribute("mensajeError",
+                        "No tiene permisos para modificar la galeria de esta propiedad.");
+            } else {
+                ImagenPropiedad img = new ImagenPropiedad();
+                img.setIdPropiedad(idPropiedad);
+                img.setUrlImagen(url);
+                img.setEsPrincipal(esPrincipal);
+
+                boolean ok = imagenDAO.insertar(img);
+                request.getSession().setAttribute(
+                        ok ? "mensajeExito" : "mensajeError",
+                        ok ? "Imagen agregada correctamente."
+                           : "No se pudo agregar la imagen.");
+            }
         }
 
         response.sendRedirect(request.getContextPath()
@@ -390,11 +413,24 @@ public class PropiedadServlet extends HttpServlet {
         int idPropiedad = parseEntero(request.getParameter("idPropiedad"), 0);
 
         if (idImagen > 0) {
-            boolean ok = imagenDAO.eliminar(idImagen);
-            request.getSession().setAttribute(
-                    ok ? "mensajeExito" : "mensajeError",
-                    ok ? "Imagen eliminada correctamente."
-                       : "No se pudo eliminar la imagen.");
+            ImagenPropiedad img = imagenDAO.obtenerPorId(idImagen);
+            if (img == null) {
+                request.getSession().setAttribute("mensajeError", "La imagen no existe.");
+            } else {
+                idPropiedad = img.getIdPropiedad();
+                Propiedad propiedad = propiedadDAO.obtenerPorId(idPropiedad);
+
+                if (!esPropietario(propiedad, request)) {
+                    request.getSession().setAttribute("mensajeError",
+                            "No tiene permisos para eliminar esta imagen.");
+                } else {
+                    boolean ok = imagenDAO.eliminar(idImagen);
+                    request.getSession().setAttribute(
+                            ok ? "mensajeExito" : "mensajeError",
+                            ok ? "Imagen eliminada correctamente."
+                               : "No se pudo eliminar la imagen.");
+                }
+            }
         }
 
         response.sendRedirect(request.getContextPath()
@@ -480,6 +516,120 @@ public class PropiedadServlet extends HttpServlet {
             return (Integer) session.getAttribute("idUsuario");
         }
         return 0;
+    }
+
+    /**
+     * Verifica que la peticion provenga de un usuario autenticado con rol
+     * INMOBILIARIA. Si no, redirige al login o muestra acceso denegado.
+     *
+     * @return true si el acceso esta autorizado
+     */
+    private boolean verificarAccesoAgente(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("idUsuario") == null) {
+            response.sendRedirect(request.getContextPath() + "/LoginServlet");
+            return false;
+        }
+
+        if (!"INMOBILIARIA".equals(session.getAttribute("rol"))) {
+            request.setAttribute("rutaSolicitada", request.getServletPath());
+            request.setAttribute("rolActual", session.getAttribute("rol"));
+            request.getRequestDispatcher("/acceso_denegado.jsp").forward(request, response);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Comprueba que la propiedad exista y pertenezca al usuario en sesion.
+     */
+    private boolean esPropietario(Propiedad propiedad, HttpServletRequest request) {
+        return propiedad != null && propiedad.getIdInmobiliaria() == obtenerIdInmobiliaria(request);
+    }
+
+    /**
+     * Inserta la propiedad junto con sus caracteristicas (N:M) y su galeria
+     * (1:N) dentro de una unica transaccion JDBC. Si cualquier paso falla,
+     * se revierte todo para no dejar datos inconsistentes.
+     *
+     * @return ID de la propiedad creada, o -1 si no se pudo insertar
+     * @throws SQLException si ocurre un error (se revierte la transaccion)
+     */
+    private int insertarPropiedadCompleta(Propiedad p, List<Integer> caracteristicas,
+                                          List<String> urls, String urlPrincipal)
+            throws SQLException {
+
+        Connection conn = null;
+        try {
+            conn = ConexionDB.obtenerConexion();
+            conn.setAutoCommit(false);
+
+            int id = propiedadDAO.insertarYRetornarId(conn, p);
+            if (id <= 0) {
+                conn.rollback();
+                return -1;
+            }
+
+            caracteristicaDAO.actualizarCaracteristicasPropiedad(conn, id, caracteristicas);
+            imagenDAO.reemplazarGaleria(conn, id, urls, urlPrincipal);
+
+            conn.commit();
+            return id;
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ignored) { }
+            }
+            throw e;
+        } finally {
+            if (conn != null) {
+                try { conn.setAutoCommit(true); } catch (SQLException ignored) { }
+                ConexionDB.cerrar(conn);
+            }
+        }
+    }
+
+    /**
+     * Actualiza la propiedad junto con sus caracteristicas (N:M) y su galeria
+     * (1:N) dentro de una unica transaccion JDBC.
+     *
+     * @return true si la actualizacion fue exitosa
+     * @throws SQLException si ocurre un error (se revierte la transaccion)
+     */
+    private boolean actualizarPropiedadCompleta(Propiedad p, List<Integer> caracteristicas,
+                                                List<String> urls, String urlPrincipal)
+            throws SQLException {
+
+        Connection conn = null;
+        try {
+            conn = ConexionDB.obtenerConexion();
+            conn.setAutoCommit(false);
+
+            if (!propiedadDAO.actualizar(conn, p)) {
+                conn.rollback();
+                return false;
+            }
+
+            caracteristicaDAO.actualizarCaracteristicasPropiedad(conn, p.getIdPropiedad(), caracteristicas);
+            imagenDAO.reemplazarGaleria(conn, p.getIdPropiedad(), urls, urlPrincipal);
+
+            conn.commit();
+            return true;
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ignored) { }
+            }
+            throw e;
+        } finally {
+            if (conn != null) {
+                try { conn.setAutoCommit(true); } catch (SQLException ignored) { }
+                ConexionDB.cerrar(conn);
+            }
+        }
     }
 
     /**

@@ -98,52 +98,81 @@ public class ImagenPropiedadDAO {
     public void reemplazarGaleria(int idPropiedad, List<String> urls, String urlPrincipal)
             throws SQLException {
 
+        try (Connection conn = ConexionDB.obtenerConexion()) {
+            boolean autoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            try {
+                reemplazarGaleria(conn, idPropiedad, urls, urlPrincipal);
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(autoCommit);
+            }
+        }
+    }
+
+    /**
+     * Variante que recibe una conexion existente para participar en una
+     * transaccion coordinada externamente (ej: alta completa de propiedad).
+     * NO inicia, confirma ni revierte la transaccion, y NO cierra la conexion.
+     *
+     * @param conn         Conexion JDBC suministrada por el llamador
+     * @param idPropiedad  ID de la propiedad
+     * @param urls         URLs secundarias (puede ser null)
+     * @param urlPrincipal URL de la imagen principal (puede ser null)
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public void reemplazarGaleria(Connection conn, int idPropiedad, List<String> urls,
+                                  String urlPrincipal) throws SQLException {
+
         String sqlDelete = "DELETE FROM imagen_propiedad WHERE id_propiedad = ?";
         String sqlInsert = "INSERT INTO imagen_propiedad (id_propiedad, url_imagen, es_principal) "
                 + "VALUES (?, ?, ?)";
 
-        Connection conn = null;
-        try {
-            conn = ConexionDB.obtenerConexion();
-            conn.setAutoCommit(false);
+        try (PreparedStatement psDel = conn.prepareStatement(sqlDelete)) {
+            psDel.setInt(1, idPropiedad);
+            psDel.executeUpdate();
+        }
 
-            try (PreparedStatement psDel = conn.prepareStatement(sqlDelete)) {
-                psDel.setInt(1, idPropiedad);
-                psDel.executeUpdate();
-            }
+        if (urlPrincipal != null && !urlPrincipal.trim().isEmpty()) {
+            insertarUrl(conn, sqlInsert, idPropiedad, urlPrincipal.trim(), true);
+        }
 
-            if (urlPrincipal != null && !urlPrincipal.trim().isEmpty()) {
-                insertarUrl(conn, sqlInsert, idPropiedad, urlPrincipal.trim(), true);
-            }
-
-            if (urls != null) {
-                for (String url : urls) {
-                    if (url != null && !url.trim().isEmpty()
-                            && !url.trim().equals(urlPrincipal)) {
-                        insertarUrl(conn, sqlInsert, idPropiedad, url.trim(), false);
-                    }
+        if (urls != null) {
+            for (String url : urls) {
+                if (url != null && !url.trim().isEmpty()
+                        && !url.trim().equals(urlPrincipal)) {
+                    insertarUrl(conn, sqlInsert, idPropiedad, url.trim(), false);
                 }
-            }
-
-            conn.commit();
-
-        } catch (SQLException e) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException ignored) {
-                }
-            }
-            throw e;
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException ignored) {
-                }
-                ConexionDB.cerrar(conn);
             }
         }
+    }
+
+    /**
+     * Obtiene una imagen por su clave primaria.
+     *
+     * @param idImagen ID de la imagen
+     * @return Imagen encontrada o null si no existe
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public ImagenPropiedad obtenerPorId(int idImagen) throws SQLException {
+        String sql = "SELECT id_imagen, id_propiedad, url_imagen, es_principal "
+                + "FROM imagen_propiedad WHERE id_imagen = ?";
+
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, idImagen);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapear(rs);
+                }
+            }
+        }
+        return null;
     }
 
     /**
