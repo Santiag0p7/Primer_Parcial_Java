@@ -82,7 +82,7 @@ public class BuscarPropiedadesServlet extends HttpServlet {
         } catch (SQLException ignored) {
         }
 
-        request.setAttribute("tituloPagina", "Catalogo de Propiedades - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", "Catalogo de Propiedades - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/catalogo.jsp").forward(request, response);
     }
 

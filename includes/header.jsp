@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Inmobiliaria UTS - Sistema de Administracion Inmobiliaria. Encuentra tu hogar ideal en Bucaramanga y la region.">
-    <title>${tituloPagina != null ? tituloPagina : 'Inmobiliaria UTS'}</title>
+    <meta name="description" content="JSGE In-Mobiliaria - Sistema de Administracion Inmobiliaria. Encuentra tu hogar ideal en Bucaramanga y la region.">
+    <title>${tituloPagina != null ? tituloPagina : 'JSGE In-Mobiliaria'}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -22,7 +22,7 @@
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="${ctx}/index">
             <i class="bi bi-buildings-fill brand-icon me-2"></i>
-            <span class="brand-text">Inmobiliaria <span class="brand-accent">UTS</span></span>
+            <span class="brand-text">JSGE <span class="brand-accent">In-Mobiliaria</span></span>
         </a>
 
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"

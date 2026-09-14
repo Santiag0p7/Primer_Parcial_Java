@@ -142,7 +142,7 @@ public class PropiedadServlet extends HttpServlet {
         List<Propiedad> propiedades = propiedadDAO.listarPorInmobiliaria(idInmobiliaria);
 
         request.setAttribute("propiedades", propiedades);
-        request.setAttribute("tituloPagina", "Mis Propiedades - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", "Mis Propiedades - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/dashboard/agente/mis_propiedades.jsp")
                .forward(request, response);
     }
@@ -171,7 +171,7 @@ public class PropiedadServlet extends HttpServlet {
 
         request.setAttribute("idsSeleccionados", idsSeleccionados);
         request.setAttribute("imagenes", imagenes);
-        request.setAttribute("tituloPagina", "Propiedad - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", "Propiedad - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/dashboard/agente/formulario_propiedad.jsp")
                .forward(request, response);
     }
@@ -336,7 +336,7 @@ public class PropiedadServlet extends HttpServlet {
         request.setAttribute("imagenes", imagenDAO.listarPorPropiedad(id));
         request.setAttribute("caracteristicas", caracteristicaDAO.listarPorPropiedad(id));
         request.setAttribute("fechaMinima", java.time.LocalDate.now().toString());
-        request.setAttribute("tituloPagina", propiedad.getTitulo() + " - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", propiedad.getTitulo() + " - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/detalle_propiedad.jsp")
                .forward(request, response);
     }
@@ -365,7 +365,7 @@ public class PropiedadServlet extends HttpServlet {
 
         request.setAttribute("propiedad", propiedad);
         request.setAttribute("imagenes", imagenDAO.listarPorPropiedad(id));
-        request.setAttribute("tituloPagina", "Galeria - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", "Galeria - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/dashboard/agente/galeria_propiedad.jsp")
                .forward(request, response);
     }

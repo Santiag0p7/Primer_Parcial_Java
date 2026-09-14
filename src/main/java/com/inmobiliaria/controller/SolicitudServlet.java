@@ -60,13 +60,13 @@ public class SolicitudServlet extends HttpServlet {
 
             if ("CLIENTE".equals(rol)) {
                 request.setAttribute("solicitudes", solicitudDAO.listarPorCliente(idUsuario));
-                request.setAttribute("tituloPagina", "Mis Solicitudes - Inmobiliaria UTS");
+                request.setAttribute("tituloPagina", "Mis Solicitudes - JSGE In-Mobiliaria");
                 request.getRequestDispatcher("/dashboard/cliente/mis_solicitudes_cliente.jsp")
                        .forward(request, response);
 
             } else if ("INMOBILIARIA".equals(rol)) {
                 request.setAttribute("solicitudes", solicitudDAO.listarPorInmobiliaria(idUsuario));
-                request.setAttribute("tituloPagina", "Solicitudes Recibidas - Inmobiliaria UTS");
+                request.setAttribute("tituloPagina", "Solicitudes Recibidas - JSGE In-Mobiliaria");
                 request.getRequestDispatcher("/dashboard/agente/gestion_solicitudes_agente.jsp")
                        .forward(request, response);
 

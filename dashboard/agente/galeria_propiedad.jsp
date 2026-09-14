@@ -4,7 +4,7 @@
 <c:if test="${empty sessionScope.idUsuario}">
     <c:redirect url="${pageContext.request.contextPath}/LoginServlet"/>
 </c:if>
-<c:set var="tituloPagina" value="Galeria de Propiedad - Inmobiliaria UTS" scope="request"/>
+<c:set var="tituloPagina" value="Galeria de Propiedad - JSGE In-Mobiliaria" scope="request"/>
 <%@ include file="/includes/header.jsp"%>
 
 <style>

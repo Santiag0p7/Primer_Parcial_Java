@@ -1,4 +1,4 @@
-# UTS Inmobiliaria
+# JSGE In-Mobiliaria
 
 Sistema web de administración inmobiliaria desarrollado en **Java EE** bajo arquitectura **MVC** (Servlets + JSP + JDBC), como proyecto del primer parcial de la asignatura de Programación Web / Java. Permite gestionar propiedades, su galería de imágenes, características, solicitudes de visita/citas, usuarios, parámetros del sistema y reportes, con control de acceso por roles.
 
@@ -22,7 +22,7 @@ Sistema web de administración inmobiliaria desarrollado en **Java EE** bajo arq
 
 ## Descripción general
 
-**UTS Inmobiliaria** es una aplicación web que implementa el núcleo de un negocio inmobiliario:
+**JSGE In-Mobiliaria** es una aplicación web que implementa el núcleo de un negocio inmobiliario:
 
 - Catálogo público de propiedades con buscador y filtros (ciudad, tipo, precio y palabra clave).
 - Ficha de detalle con galería de imágenes (1:N) y características (N:M).
@@ -284,5 +284,5 @@ Primer_Parcial_Java/
 
 ## Autor
 
-Proyecto académico — **UTS Inmobiliaria**.
+Proyecto académico — **JSGE In-Mobiliaria**.
 Desarrollado por Jhoan Santiago Garcia Estupiñan.

@@ -5,7 +5,7 @@
             <div class="col-lg-4 col-md-6">
                 <div class="footer-brand mb-4">
                     <h4 class="text-white fw-bold">
-                        <i class="bi bi-buildings-fill me-2"></i>Inmobiliaria <span class="text-gold">UTS</span>
+                        <i class="bi bi-buildings-fill me-2"></i>JSGE <span class="text-gold">In-Mobiliaria</span>
                     </h4>
                 </div>
                 <p class="text-light-muted mb-4">
@@ -85,7 +85,7 @@
         <div class="row align-items-center py-3">
             <div class="col-md-6 text-center text-md-start">
                 <p class="footer-copyright mb-0">
-                    &copy; 2026 Inmobiliaria UTS. Todos los derechos reservados.
+                    &copy; 2026 JSGE In-Mobiliaria. Todos los derechos reservados.
                 </p>
             </div>
             <div class="col-md-6 text-center text-md-end">

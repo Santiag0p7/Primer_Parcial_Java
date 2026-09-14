@@ -55,7 +55,7 @@ public class ReporteServlet extends HttpServlet {
                     "No se pudieron cargar los reportes. Intente nuevamente.");
         }
 
-        request.setAttribute("tituloPagina", "Reportes - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", "Reportes - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/dashboard/admin/reportes.jsp")
                .forward(request, response);
     }

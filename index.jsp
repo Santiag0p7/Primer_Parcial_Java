@@ -113,7 +113,7 @@
                         La mejor eleccion en <span class="text-gold">Bienes Raices</span>
                     </h2>
                     <p class="section-text">
-                        En Inmobiliaria UTS nos dedicamos a hacer realidad el sueno de nuestros
+                        En JSGE In-Mobiliaria nos dedicamos a hacer realidad el sueno de nuestros
                         clientes. Con mas de una decada de trayectoria en el mercado inmobiliario
                         santandereano, hemos construido una reputacion basada en la confianza,
                         la transparencia y la excelencia en el servicio.
@@ -170,7 +170,7 @@
                         <div class="about-image-card">
                             <div class="about-img-placeholder">
                                 <i class="bi bi-buildings"></i>
-                                <p>Oficinas Inmobiliaria UTS</p>
+                                <p>Oficinas JSGE In-Mobiliaria</p>
                             </div>
                         </div>
                         <div class="experience-badge">

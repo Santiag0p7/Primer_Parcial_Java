@@ -7,7 +7,7 @@
 <c:if test="${sessionScope.rol != 'INMOBILIARIA'}">
     <c:redirect url="${pageContext.request.contextPath}/acceso_denegado.jsp"/>
 </c:if>
-<c:set var="tituloPagina" value="Solicitudes Recibidas - Inmobiliaria UTS" scope="request"/>
+<c:set var="tituloPagina" value="Solicitudes Recibidas - JSGE In-Mobiliaria" scope="request"/>
 <%@ include file="/includes/header.jsp"%>
 
 <style>

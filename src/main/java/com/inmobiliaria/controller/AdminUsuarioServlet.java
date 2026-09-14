@@ -61,7 +61,7 @@ public class AdminUsuarioServlet extends HttpServlet {
             request.setAttribute("error", "No se pudo cargar la lista de usuarios.");
         }
 
-        request.setAttribute("tituloPagina", "Gestion de Usuarios - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", "Gestion de Usuarios - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/dashboard/admin/gestion_usuarios.jsp")
                .forward(request, response);
     }

@@ -42,7 +42,7 @@ public class AdminParametrosServlet extends HttpServlet {
 
         cargarCatalogos(request);
         request.setAttribute("tabActivo", normalizarTab(request.getParameter("tab")));
-        request.setAttribute("tituloPagina", "Parametros del Sistema - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", "Parametros del Sistema - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/dashboard/admin/gestion_parametros.jsp")
                .forward(request, response);
     }

@@ -1,5 +1,5 @@
 -- ============================================================
--- PROYECTO COMPLETO - UTS INMOBILIARIA
+-- PROYECTO COMPLETO - JSGE IN-MOBILIARIA
 -- Script SQL consolidado (Sprint 1 + Sprint 2 + Sprint 3)
 -- Base de datos: inmobiliaria (MySQL / MariaDB)
 --

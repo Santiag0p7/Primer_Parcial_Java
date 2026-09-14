@@ -53,7 +53,7 @@ public class LandingServlet extends HttpServlet {
             request.setAttribute("ciudades", ciudades);
             request.setAttribute("propiedadesDestacadas", destacadas);
             request.setAttribute("imagenesPrincipales", imagenesPrincipales);
-            request.setAttribute("tituloPagina", "Inmobiliaria UTS - Tu Hogar Ideal");
+            request.setAttribute("tituloPagina", "JSGE In-Mobiliaria - Tu Hogar Ideal");
 
         } catch (SQLException e) {
             // Si falla la BD, la landing sigue funcionando sin datos dinamicos

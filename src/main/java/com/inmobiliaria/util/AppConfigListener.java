@@ -42,13 +42,13 @@ public class AppConfigListener implements ServletContextListener {
         try (InputStream in = ctx.getResourceAsStream(ARCHIVO_CONFIG)) {
             if (in != null) {
                 DbConfig.cargar(leerConfiguracion(in));
-                ctx.log("UTS Inmobiliaria: configuracion de BD cargada desde " + ARCHIVO_CONFIG);
+                ctx.log("JSGE In-Mobiliaria: configuracion de BD cargada desde " + ARCHIVO_CONFIG);
             } else {
-                ctx.log("UTS Inmobiliaria: no se encontro " + ARCHIVO_CONFIG
+                ctx.log("JSGE In-Mobiliaria: no se encontro " + ARCHIVO_CONFIG
                         + ". Se usaran valores por defecto/variables de entorno.");
             }
         } catch (IOException e) {
-            ctx.log("UTS Inmobiliaria: error al leer " + ARCHIVO_CONFIG, e);
+            ctx.log("JSGE In-Mobiliaria: error al leer " + ARCHIVO_CONFIG, e);
         }
     }
 

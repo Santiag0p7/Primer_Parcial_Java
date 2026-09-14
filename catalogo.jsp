@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<c:set var="tituloPagina" value="Catalogo de Propiedades - Inmobiliaria UTS" scope="request"/>
+<c:set var="tituloPagina" value="Catalogo de Propiedades - JSGE In-Mobiliaria" scope="request"/>
 
 <%@ include file="/includes/header.jsp"%>
 

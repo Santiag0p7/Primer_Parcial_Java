@@ -56,7 +56,7 @@ public class PerfilServlet extends HttpServlet {
             request.setAttribute("exito", "Perfil actualizado correctamente.");
         }
 
-        request.setAttribute("tituloPagina", "Mi Perfil - Inmobiliaria UTS");
+        request.setAttribute("tituloPagina", "Mi Perfil - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/dashboard/mi_perfil.jsp")
                .forward(request, response);
     }
@@ -92,7 +92,7 @@ public class PerfilServlet extends HttpServlet {
         if (nombres.isEmpty() || apellidos.isEmpty() || documento.isEmpty()) {
             request.setAttribute("error", "Los campos Nombres, Apellidos y Documento son obligatorios.");
             request.setAttribute("perfil", perfil);
-            request.setAttribute("tituloPagina", "Mi Perfil - Inmobiliaria UTS");
+            request.setAttribute("tituloPagina", "Mi Perfil - JSGE In-Mobiliaria");
             request.getRequestDispatcher("/dashboard/mi_perfil.jsp")
                    .forward(request, response);
             return;
@@ -108,7 +108,7 @@ public class PerfilServlet extends HttpServlet {
             } else {
                 request.setAttribute("error", "No se pudo actualizar el perfil. Intente de nuevo.");
                 request.setAttribute("perfil", perfil);
-                request.setAttribute("tituloPagina", "Mi Perfil - Inmobiliaria UTS");
+                request.setAttribute("tituloPagina", "Mi Perfil - JSGE In-Mobiliaria");
                 request.getRequestDispatcher("/dashboard/mi_perfil.jsp")
                        .forward(request, response);
             }
@@ -124,7 +124,7 @@ public class PerfilServlet extends HttpServlet {
                         "No se pudo guardar el perfil. Verifique los datos e intente de nuevo.");
             }
             request.setAttribute("perfil", perfil);
-            request.setAttribute("tituloPagina", "Mi Perfil - Inmobiliaria UTS");
+            request.setAttribute("tituloPagina", "Mi Perfil - JSGE In-Mobiliaria");
             request.getRequestDispatcher("/dashboard/mi_perfil.jsp")
                    .forward(request, response);
         }

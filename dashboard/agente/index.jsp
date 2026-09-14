@@ -8,7 +8,7 @@
     <c:redirect url="${pageContext.request.contextPath}/acceso_denegado.jsp"/>
 </c:if>
 <c:if test="${empty tituloPagina}">
-    <c:set var="tituloPagina" value="Panel Agente - Inmobiliaria UTS" scope="request"/>
+    <c:set var="tituloPagina" value="Panel Agente - JSGE In-Mobiliaria" scope="request"/>
 </c:if>
 <c:set var="statProp" value="${not empty totalPropiedadesActivas ? totalPropiedadesActivas : 0}"/>
 <c:set var="statSol" value="${not empty totalSolicitudesPendientes ? totalSolicitudesPendientes : 0}"/>

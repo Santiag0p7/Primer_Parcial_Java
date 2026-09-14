@@ -5,7 +5,7 @@
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-    <display-name>Sistema Inmobiliario UTS</display-name>
+    <display-name>JSGE In-Mobiliaria</display-name>
     <description>Sistema de Administracion Inmobiliaria - Primer Parcial Java UTS</description>
 
     <welcome-file-list>

@@ -7,7 +7,7 @@
 <c:if test="${sessionScope.rol != 'ADMINISTRADOR'}">
     <c:redirect url="${pageContext.request.contextPath}/acceso_denegado.jsp"/>
 </c:if>
-<c:set var="tituloPagina" value="Gestion de Usuarios - Inmobiliaria UTS" scope="request"/>
+<c:set var="tituloPagina" value="Gestion de Usuarios - JSGE In-Mobiliaria" scope="request"/>
 <%@ include file="/includes/header.jsp"%>
 
 <style>

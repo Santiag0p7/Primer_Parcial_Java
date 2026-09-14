@@ -5,7 +5,7 @@
     <c:redirect url="${pageContext.request.contextPath}/LoginServlet"/>
 </c:if>
 <c:set var="esEdicion" value="${not empty propiedad and propiedad.idPropiedad > 0}"/>
-<c:set var="tituloPagina" value="${esEdicion ? 'Editar' : 'Nueva'} Propiedad - Inmobiliaria UTS" scope="request"/>
+<c:set var="tituloPagina" value="${esEdicion ? 'Editar' : 'Nueva'} Propiedad - JSGE In-Mobiliaria" scope="request"/>
 <%@ include file="/includes/header.jsp"%>
 
 <style>

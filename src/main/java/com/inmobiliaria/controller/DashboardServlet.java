@@ -47,13 +47,13 @@ public class DashboardServlet extends HttpServlet {
         String destino;
         if ("ADMINISTRADOR".equals(rol)) {
             destino = "/dashboard/admin/index.jsp";
-            request.setAttribute("tituloPagina", "Panel Administrador - Inmobiliaria UTS");
+            request.setAttribute("tituloPagina", "Panel Administrador - JSGE In-Mobiliaria");
         } else if ("INMOBILIARIA".equals(rol)) {
             destino = "/dashboard/agente/index.jsp";
-            request.setAttribute("tituloPagina", "Panel Agente - Inmobiliaria UTS");
+            request.setAttribute("tituloPagina", "Panel Agente - JSGE In-Mobiliaria");
         } else if ("CLIENTE".equals(rol)) {
             destino = "/dashboard/cliente/index.jsp";
-            request.setAttribute("tituloPagina", "Mi Panel - Inmobiliaria UTS");
+            request.setAttribute("tituloPagina", "Mi Panel - JSGE In-Mobiliaria");
         } else {
             request.setAttribute("rutaSolicitada", request.getServletPath());
             request.setAttribute("rolActual", rol);

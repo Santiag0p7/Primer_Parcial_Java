@@ -3,7 +3,7 @@
 <c:if test="${empty sessionScope.idUsuario}">
     <c:redirect url="${pageContext.request.contextPath}/LoginServlet"/>
 </c:if>
-<c:set var="tituloPagina" value="Mi Panel - Inmobiliaria UTS" scope="request"/>
+<c:set var="tituloPagina" value="Mi Panel - JSGE In-Mobiliaria" scope="request"/>
 <%@ include file="/includes/header.jsp"%>
 
 <style>
