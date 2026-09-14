@@ -96,6 +96,16 @@
         <url-pattern>/catalogo</url-pattern>
     </servlet-mapping>
 
+    <!-- Reportes del sistema (solo Administrador) - Sprint 2 -->
+    <servlet>
+        <servlet-name>ReporteServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.ReporteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReporteServlet</servlet-name>
+        <url-pattern>/ReporteServlet</url-pattern>
+    </servlet-mapping>
+
     <!-- ==========================================
          FILTROS - Seguridad
          ========================================== -->

@@ -48,7 +48,7 @@
                         </a>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <a href="#" class="text-decoration-none">
+                        <a href="${pageContext.request.contextPath}/ReporteServlet" class="text-decoration-none">
                             <div class="card panel-card h-100">
                                 <div class="card-body text-center">
                                     <i class="bi bi-bar-chart-fill fs-1" style="color:var(--gold);"></i>
