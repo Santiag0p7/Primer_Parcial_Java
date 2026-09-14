@@ -245,6 +245,71 @@ public class PropiedadDAO {
     }
 
     /**
+     * Lista TODAS las propiedades (activas e inactivas) con el correo de la
+     * inmobiliaria duena. Uso exclusivo del panel de administracion.
+     *
+     * @param filtro "activas", "inactivas" o cualquier otro valor para todas
+     * @return Lista de propiedades ordenadas por fecha descendente
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public List<Propiedad> listarTodasAdmin(String filtro) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+
+        // Incluye el correo del dueno (inmobiliaria) ademas de tipo y ciudad.
+        sql.append("SELECT p.id_propiedad, p.matricula_inmobiliaria, p.titulo, p.descripcion, ")
+           .append("p.precio, p.habitaciones, p.banos, p.area_m2, p.direccion, p.estado_logico, ")
+           .append("p.id_inmobiliaria, p.id_tipo, p.id_ciudad, p.fecha_publicacion, ")
+           .append("t.nombre AS nombre_tipo, c.nombre AS nombre_ciudad, ")
+           .append("u.correo AS correo_inmobiliaria ")
+           .append("FROM propiedad p ")
+           .append("INNER JOIN tipo_propiedad t ON p.id_tipo = t.id_tipo ")
+           .append("INNER JOIN ciudad c ON p.id_ciudad = c.id_ciudad ")
+           .append("INNER JOIN usuario u ON p.id_inmobiliaria = u.id_usuario ");
+
+        if ("activas".equals(filtro)) {
+            sql.append("WHERE p.estado_logico = TRUE ");
+        } else if ("inactivas".equals(filtro)) {
+            sql.append("WHERE p.estado_logico = FALSE ");
+        }
+
+        sql.append("ORDER BY p.fecha_publicacion DESC");
+
+        List<Propiedad> lista = new ArrayList<>();
+
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql.toString());
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Propiedad p = mapear(rs);
+                p.setCorreoInmobiliaria(rs.getString("correo_inmobiliaria"));
+                lista.add(p);
+            }
+        }
+        return lista;
+    }
+
+    /**
+     * Activa o desactiva (baja logica) una propiedad. Uso del administrador.
+     *
+     * @param idPropiedad ID de la propiedad
+     * @param activo true = activa, false = desactivada
+     * @return true si se actualizo correctamente
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public boolean cambiarEstadoLogico(int idPropiedad, boolean activo) throws SQLException {
+        String sql = "UPDATE propiedad SET estado_logico = ? WHERE id_propiedad = ?";
+
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setBoolean(1, activo);
+            ps.setInt(2, idPropiedad);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    /**
      * Lista el catalogo de tipos de propiedad para los selectores del formulario.
      *
      * @return Mapa id_tipo -> nombre

@@ -23,6 +23,7 @@ USE inmobiliaria;
 -- ============================================================
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS favorito;
 DROP TABLE IF EXISTS solicitud_visita;
 DROP TABLE IF EXISTS propiedad_caracteristica;
 DROP TABLE IF EXISTS imagen_propiedad;
@@ -173,7 +174,22 @@ CREATE TABLE solicitud_visita (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- 4. DATOS DE PRUEBA (DML)
+-- 4. FAVORITOS (lista de deseos del cliente) - N:M
+-- ============================================================
+
+CREATE TABLE favorito (
+    id_usuario INT NOT NULL,
+    id_propiedad INT NOT NULL,
+    fecha_agregado DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_usuario, id_propiedad),
+    CONSTRAINT fk_favorito_usuario FOREIGN KEY (id_usuario)
+        REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_favorito_propiedad FOREIGN KEY (id_propiedad)
+        REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================================================
+-- 5. DATOS DE PRUEBA (DML)
 -- ============================================================
 
 -- Roles
@@ -271,7 +287,7 @@ INSERT INTO solicitud_visita (id_propiedad, id_cliente, fecha_visita, hora_visit
     'Disponible para visitar el apartamento.', 'CONFIRMADA');
 
 -- ============================================================
--- 5. VERIFICACION (opcional)
+-- 6. VERIFICACION (opcional)
 -- ============================================================
 -- SELECT COUNT(*) AS propiedades_activas FROM propiedad WHERE estado_logico = TRUE;
 -- SELECT COUNT(*) AS solicitudes_pendientes FROM solicitud_visita WHERE estado = 'PENDIENTE';

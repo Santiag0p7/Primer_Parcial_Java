@@ -155,6 +155,26 @@
         <url-pattern>/AdminParametrosServlet</url-pattern>
     </servlet-mapping>
 
+    <!-- Administracion Global: Gestion de Propiedades (Admin) -->
+    <servlet>
+        <servlet-name>AdminPropiedadServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.AdminPropiedadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminPropiedadServlet</servlet-name>
+        <url-pattern>/AdminPropiedadServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- Modulo de Favoritos del Cliente -->
+    <servlet>
+        <servlet-name>FavoritoServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.FavoritoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FavoritoServlet</servlet-name>
+        <url-pattern>/FavoritoServlet</url-pattern>
+    </servlet-mapping>
+
     <!-- ==========================================
          FILTROS - Seguridad
          ========================================== -->

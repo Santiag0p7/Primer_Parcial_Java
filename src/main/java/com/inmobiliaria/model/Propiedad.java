@@ -33,6 +33,7 @@ public class Propiedad implements Serializable {
     // Campos auxiliares para mostrar en las vistas (JOIN)
     private String nombreTipo;
     private String nombreCiudad;
+    private String correoInmobiliaria;
 
     // Constructor vacio
     public Propiedad() {
@@ -187,6 +188,14 @@ public class Propiedad implements Serializable {
 
     public void setNombreCiudad(String nombreCiudad) {
         this.nombreCiudad = nombreCiudad;
+    }
+
+    public String getCorreoInmobiliaria() {
+        return correoInmobiliaria;
+    }
+
+    public void setCorreoInmobiliaria(String correoInmobiliaria) {
+        this.correoInmobiliaria = correoInmobiliaria;
     }
 
     @Override

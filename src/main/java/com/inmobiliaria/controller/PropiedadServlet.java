@@ -1,6 +1,7 @@
 package com.inmobiliaria.controller;
 
 import com.inmobiliaria.dao.CaracteristicaDAO;
+import com.inmobiliaria.dao.FavoritoDAO;
 import com.inmobiliaria.dao.ImagenPropiedadDAO;
 import com.inmobiliaria.dao.PropiedadDAO;
 import com.inmobiliaria.model.ImagenPropiedad;
@@ -44,6 +45,7 @@ public class PropiedadServlet extends HttpServlet {
     private final PropiedadDAO propiedadDAO = new PropiedadDAO();
     private final CaracteristicaDAO caracteristicaDAO = new CaracteristicaDAO();
     private final ImagenPropiedadDAO imagenDAO = new ImagenPropiedadDAO();
+    private final FavoritoDAO favoritoDAO = new FavoritoDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -336,6 +338,18 @@ public class PropiedadServlet extends HttpServlet {
         request.setAttribute("imagenes", imagenDAO.listarPorPropiedad(id));
         request.setAttribute("caracteristicas", caracteristicaDAO.listarPorPropiedad(id));
         request.setAttribute("fechaMinima", java.time.LocalDate.now().toString());
+
+        // Indica si el cliente ya guardo esta propiedad en favoritos
+        HttpSession sesion = request.getSession(false);
+        if (sesion != null && sesion.getAttribute("idUsuario") != null) {
+            int idUsuario = (Integer) sesion.getAttribute("idUsuario");
+            try {
+                request.setAttribute("esFavorito", favoritoDAO.esFavorito(idUsuario, id));
+            } catch (SQLException e) {
+                request.setAttribute("esFavorito", false);
+            }
+        }
+
         request.setAttribute("tituloPagina", propiedad.getTitulo() + " - JSGE In-Mobiliaria");
         request.getRequestDispatcher("/detalle_propiedad.jsp")
                .forward(request, response);

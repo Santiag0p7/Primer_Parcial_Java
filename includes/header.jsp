@@ -76,6 +76,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="${ctx}/FavoritoServlet">
+                            <i class="bi bi-heart me-1"></i> Mis Favoritos
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="${ctx}/PerfilServlet">
                             <i class="bi bi-person-circle me-1"></i> Mi Perfil
                         </a>

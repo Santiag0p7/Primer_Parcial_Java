@@ -128,6 +128,29 @@
                                     </a>
                                 </c:otherwise>
                             </c:choose>
+
+                            <%-- Guardar/quitar de favoritos (solo CLIENTE) --%>
+                            <c:if test="${sessionScope.rol == 'CLIENTE'}">
+                                <form action="${pageContext.request.contextPath}/FavoritoServlet"
+                                      method="post" class="mt-2">
+                                    <input type="hidden" name="idPropiedad" value="${propiedad.idPropiedad}">
+                                    <input type="hidden" name="origen" value="detalle">
+                                    <c:choose>
+                                        <c:when test="${esFavorito}">
+                                            <input type="hidden" name="action" value="eliminar">
+                                            <button type="submit" class="btn btn-outline-danger w-100">
+                                                <i class="bi bi-heart-fill me-2"></i> Quitar de favoritos
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="hidden" name="action" value="agregar">
+                                            <button type="submit" class="btn btn-outline-secondary w-100">
+                                                <i class="bi bi-heart me-2"></i> Guardar en favoritos
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </form>
+                            </c:if>
                         </div>
                     </div>
                 </div>
