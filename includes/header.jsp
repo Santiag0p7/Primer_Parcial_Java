@@ -95,7 +95,7 @@
             <c:if test="${rol == 'INMOBILIARIA'}">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="${ctx}/dashboard/agente/index.jsp">
+                        <a class="nav-link" href="${ctx}/DashboardServlet">
                             <i class="bi bi-speedometer2 me-1"></i> Panel Agente
                         </a>
                     </li>
@@ -144,7 +144,7 @@
             <c:if test="${rol == 'ADMINISTRADOR'}">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="${ctx}/dashboard/admin/index.jsp">
+                        <a class="nav-link" href="${ctx}/DashboardServlet">
                             <i class="bi bi-speedometer2 me-1"></i> Panel Admin
                         </a>
                     </li>

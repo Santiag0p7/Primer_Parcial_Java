@@ -106,6 +106,16 @@
         <url-pattern>/ReporteServlet</url-pattern>
     </servlet-mapping>
 
+    <!-- Dashboard con metricas por rol (Sprint 3 - Item 3) -->
+    <servlet>
+        <servlet-name>DashboardServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.DashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DashboardServlet</servlet-name>
+        <url-pattern>/DashboardServlet</url-pattern>
+    </servlet-mapping>
+
     <!-- Sistema de Solicitud de Citas y Agendamiento (Sprint 3 - Item 1) -->
     <servlet>
         <servlet-name>SolicitudServlet</servlet-name>

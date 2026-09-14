@@ -1,9 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:if test="${empty sessionScope.idUsuario}">
     <c:redirect url="${pageContext.request.contextPath}/LoginServlet"/>
 </c:if>
-<c:set var="tituloPagina" value="Panel Agente - Inmobiliaria UTS" scope="request"/>
+<c:if test="${sessionScope.rol != 'INMOBILIARIA'}">
+    <c:redirect url="${pageContext.request.contextPath}/acceso_denegado.jsp"/>
+</c:if>
+<c:if test="${empty tituloPagina}">
+    <c:set var="tituloPagina" value="Panel Agente - Inmobiliaria UTS" scope="request"/>
+</c:if>
+<c:set var="statProp" value="${not empty totalPropiedadesActivas ? totalPropiedadesActivas : 0}"/>
+<c:set var="statSol" value="${not empty totalSolicitudesPendientes ? totalSolicitudesPendientes : 0}"/>
 <%@ include file="/includes/header.jsp"%>
 
 <style>
@@ -23,6 +31,44 @@
                     Bienvenido, <strong>${sessionScope.correo}</strong>.<br>
                     Gestiona las propiedades asignadas, atiende consultas de clientes y agenda visitas.
                 </p>
+
+                <!-- ================= METRICAS (Sprint 3 - Item 3) ================= -->
+                <c:if test="${not empty errorMetricas}">
+                    <div class="alert alert-danger mt-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>${errorMetricas}
+                    </div>
+                </c:if>
+
+                <div class="row g-4 mt-4">
+                    <div class="col-md-6">
+                        <div class="card panel-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between text-start">
+                                    <div>
+                                        <p class="text-muted text-uppercase small mb-1">Mis propiedades activas</p>
+                                        <h2 class="fw-bold mb-0" style="color:#0B2545;">${statProp}</h2>
+                                    </div>
+                                    <i class="bi bi-house-door-fill fs-1" style="color:var(--gold);"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card panel-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between text-start">
+                                    <div>
+                                        <p class="text-muted text-uppercase small mb-1">Solicitudes pendientes</p>
+                                        <h2 class="fw-bold mb-0" style="color:#0B2545;">${statSol}</h2>
+                                    </div>
+                                    <i class="bi bi-calendar2-week-fill fs-1" style="color:var(--gold);"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="mt-5 mb-0" style="color:#0B2545;">Accesos rapidos</h5>
 
                 <div class="row g-4 mt-4">
                     <div class="col-md-3 col-sm-6">

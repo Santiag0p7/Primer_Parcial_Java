@@ -1,6 +1,7 @@
 package com.inmobiliaria.dao;
 
 import com.inmobiliaria.model.ConteoCiudad;
+import com.inmobiliaria.model.MetricaAgrupada;
 import com.inmobiliaria.model.Propiedad;
 import com.inmobiliaria.model.PropiedadReporte;
 import com.inmobiliaria.util.ConexionDB;
@@ -125,6 +126,144 @@ public class ReporteDAO {
                 c.setNombreCiudad(rs.getString("nombre_ciudad"));
                 c.setTotal(rs.getInt("total"));
                 lista.add(c);
+            }
+        }
+        return lista;
+    }
+
+    // ====================================================
+    // METRICAS DEL DASHBOARD (Sprint 3 - Item 3)
+    // ====================================================
+
+    /**
+     * Cuenta las propiedades activas del sistema.
+     *
+     * @return total de inmuebles con estado_logico = TRUE
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public int totalPropiedadesActivas() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM propiedad WHERE estado_logico = TRUE";
+        return contar(sql);
+    }
+
+    /**
+     * Cuenta las propiedades activas de una inmobiliaria especifica.
+     *
+     * @param idInmobiliaria ID del usuario (INMOBILIARIA) dueno de las publicaciones
+     * @return total de inmuebles activos de esa inmobiliaria
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public int totalPropiedadesActivasPorInmobiliaria(int idInmobiliaria) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM propiedad "
+                + "WHERE estado_logico = TRUE AND id_inmobiliaria = ?";
+        return contar(sql, idInmobiliaria);
+    }
+
+    /**
+     * Cuenta las solicitudes de visita en estado PENDIENTE.
+     *
+     * @return total de citas por atender
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public int totalSolicitudesPendientes() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM solicitud_visita WHERE estado = 'PENDIENTE'";
+        return contar(sql);
+    }
+
+    /**
+     * Cuenta las solicitudes PENDIENTES recibidas por una inmobiliaria.
+     *
+     * @param idInmobiliaria ID del usuario (INMOBILIARIA) dueno de las propiedades
+     * @return total de citas pendientes sobre sus inmuebles
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public int totalSolicitudesPendientesPorInmobiliaria(int idInmobiliaria) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM solicitud_visita sv "
+                + "INNER JOIN propiedad p ON sv.id_propiedad = p.id_propiedad "
+                + "WHERE sv.estado = 'PENDIENTE' AND p.id_inmobiliaria = ?";
+        return contar(sql, idInmobiliaria);
+    }
+
+    /**
+     * Cuenta el total de usuarios registrados en el sistema.
+     *
+     * @return total general de usuarios
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public int totalUsuarios() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM usuario";
+        return contar(sql);
+    }
+
+    /**
+     * Agrupa las propiedades activas por ciudad (incluye ciudades sin
+     * propiedades con total 0). Alimenta las metricas visuales del dashboard.
+     *
+     * @return Lista de etiqueta (ciudad) + total, ordenada de mayor a menor
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public List<MetricaAgrupada> obtenerMetricasPorCiudad() throws SQLException {
+        String sql = "SELECT c.nombre AS etiqueta, COUNT(p.id_propiedad) AS total "
+                + "FROM ciudad c "
+                + "LEFT JOIN propiedad p ON c.id_ciudad = p.id_ciudad AND p.estado_logico = TRUE "
+                + "GROUP BY c.id_ciudad, c.nombre "
+                + "ORDER BY total DESC, c.nombre ASC";
+        return listarMetricas(sql);
+    }
+
+    /**
+     * Agrupa las propiedades activas por tipo de propiedad (incluye tipos sin
+     * propiedades con total 0). Alimenta las metricas visuales del dashboard.
+     *
+     * @return Lista de etiqueta (tipo) + total, ordenada de mayor a menor
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public List<MetricaAgrupada> obtenerMetricasPorTipo() throws SQLException {
+        String sql = "SELECT t.nombre AS etiqueta, COUNT(p.id_propiedad) AS total "
+                + "FROM tipo_propiedad t "
+                + "LEFT JOIN propiedad p ON t.id_tipo = p.id_tipo AND p.estado_logico = TRUE "
+                + "GROUP BY t.id_tipo, t.nombre "
+                + "ORDER BY total DESC, t.nombre ASC";
+        return listarMetricas(sql);
+    }
+
+    /**
+     * Ejecuta una consulta COUNT(*) sin parametros.
+     */
+    private int contar(String sql) throws SQLException {
+        return contar(sql, null);
+    }
+
+    /**
+     * Ejecuta una consulta COUNT(*) con un parametro entero opcional.
+     */
+    private int contar(String sql, Integer parametro) throws SQLException {
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (parametro != null) {
+                ps.setInt(1, parametro);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        }
+    }
+
+    /**
+     * Ejecuta una consulta de agrupacion que devuelve las columnas
+     * 'etiqueta' y 'total'.
+     */
+    private List<MetricaAgrupada> listarMetricas(String sql) throws SQLException {
+        List<MetricaAgrupada> lista = new ArrayList<>();
+
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(new MetricaAgrupada(rs.getString("etiqueta"), rs.getInt("total")));
             }
         }
         return lista;

@@ -24,7 +24,7 @@
             </h2>
             <p class="text-muted mb-0">Administra el rol y el estado de las cuentas del sistema.</p>
         </div>
-        <a href="${pageContext.request.contextPath}/dashboard/admin/index.jsp" class="btn btn-outline-secondary btn-sm">
+        <a href="${pageContext.request.contextPath}/DashboardServlet" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i> Volver al panel
         </a>
     </div>

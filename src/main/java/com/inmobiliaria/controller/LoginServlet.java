@@ -85,17 +85,13 @@ public class LoginServlet extends HttpServlet {
         session.setAttribute("rol", rol);
         session.setMaxInactiveInterval(30 * 60); // 30 minutos
 
-        // Redirigir dinamicamente segun el rol
+        // Redirigir dinamicamente segun el rol (el DashboardServlet resuelve la vista)
         String contextPath = request.getContextPath();
         switch (rol) {
             case "ADMINISTRADOR":
-                response.sendRedirect(contextPath + "/dashboard/admin/index.jsp");
-                break;
             case "INMOBILIARIA":
-                response.sendRedirect(contextPath + "/dashboard/agente/index.jsp");
-                break;
             case "CLIENTE":
-                response.sendRedirect(contextPath + "/dashboard/cliente/index.jsp");
+                response.sendRedirect(contextPath + "/DashboardServlet");
                 break;
             default:
                 response.sendRedirect(contextPath + "/index");
