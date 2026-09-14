@@ -1,0 +1,48 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.DriverManager" %>
+<%@ page import="java.sql.SQLException" %>
+<%
+    // ============================================================
+    // conexion.jspf  ->  ARCHIVO UNICO DE CONFIGURACION DE LA BD
+    // Ubicado en la RAIZ del proyecto.
+    //
+    // Edita SOLO las lineas de abajo para alternar entre una base
+    // de datos LOCAL (XAMPP) o EN LINEA. Este mismo archivo es leido
+    // por los JSP (con <%@ include file="/conexion.jspf" %>) y por la
+    // capa Java a traves de AppConfigListener -> ConexionDB.
+    // ============================================================
+
+    // ----- LOCAL (XAMPP por defecto) -----
+    String DB_HOST    = "localhost";
+    int    DB_PORT    = 3306;
+    String DB_NOMBRE  = "inmobiliaria";
+    String DB_USUARIO = "root";
+    String DB_PASS    = "";
+
+    // ----- EN LINEA (ejemplo: comenta las de arriba y descomenta estas) -----
+    // String DB_HOST    = "miservidor.database.com";
+    // int    DB_PORT    = 3306;
+    // String DB_NOMBRE  = "inmobiliaria";
+    // String DB_USUARIO = "usuario_remoto";
+    // String DB_PASS    = "tu_password_seguro";
+
+    String DB_URL = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT
+            + "/" + DB_NOMBRE
+            + "?useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true";
+
+    // Cargar driver una sola vez
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        out.println("Error: No se encontro el driver JDBC de MySQL.");
+    }
+
+    // Obtener conexion
+    Connection conexion = null;
+    try {
+        conexion = DriverManager.getConnection(DB_URL, DB_USUARIO, DB_PASS);
+    } catch (SQLException e) {
+        out.println("Error al conectar a la base de datos: " + e.getMessage());
+    }
+%>

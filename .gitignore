@@ -30,6 +30,7 @@ replay_pid*
 # Carpetas de compilación y temporales
 /build/
 /target/
+/dist/
 /out/
 /work/
 /tmp/
@@ -39,6 +40,7 @@ replay_pid*
 .classpath
 .project
 .idea/
+.vscode/
 *.iml
 *.nbconst
 /nbproject/private/
@@ -46,3 +48,14 @@ replay_pid*
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# ==========================================
+# EXCEPCIONES: DEPENDENCIAS NECESARIAS
+# ==========================================
+# El proyecto NO usa Maven/Gradle: los JAR de WEB-INF/lib son
+# dependencias obligatorias para ejecutar en Tomcat y SI deben versionarse.
+!WEB-INF/lib/
+!WEB-INF/lib/*.jar
+
+# Clases compiladas (generadas por el IDE / javac)
+/WEB-INF/classes/

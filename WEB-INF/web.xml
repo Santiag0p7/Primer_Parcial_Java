@@ -13,6 +13,15 @@
     </welcome-file-list>
 
     <!-- ==========================================
+         CONFIGURACION INICIAL
+         ========================================== -->
+
+    <!-- Carga la configuracion de BD desde /conexion.jspf (raiz) -->
+    <listener>
+        <listener-class>com.inmobiliaria.util.AppConfigListener</listener-class>
+    </listener>
+
+    <!-- ==========================================
          SERVLETS - Controladores
          ========================================== -->
 
