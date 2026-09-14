@@ -163,4 +163,64 @@ public class CaracteristicaDAO {
             }
         }
     }
+
+    // ====================================================
+    // CRUD DE PARAMETROS (Sprint 3 - Item 2)
+    // ====================================================
+
+    /**
+     * Inserta una nueva caracteristica en el catalogo.
+     *
+     * @param nombre Nombre de la caracteristica (UNIQUE)
+     * @return true si se inserto correctamente
+     * @throws SQLException si ocurre un error (incluye nombre duplicado)
+     */
+    public boolean insertar(String nombre) throws SQLException {
+        String sql = "INSERT INTO caracteristica (nombre) VALUES (?)";
+
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    /**
+     * Actualiza el nombre de una caracteristica.
+     *
+     * @param idCaracteristica ID de la caracteristica
+     * @param nombre           Nuevo nombre
+     * @return true si se actualizo al menos un registro
+     * @throws SQLException si ocurre un error (incluye nombre duplicado)
+     */
+    public boolean actualizar(int idCaracteristica, String nombre) throws SQLException {
+        String sql = "UPDATE caracteristica SET nombre = ? WHERE id_caracteristica = ?";
+
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setInt(2, idCaracteristica);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    /**
+     * Elimina una caracteristica del catalogo.
+     *
+     * @param idCaracteristica ID de la caracteristica
+     * @return true si se elimino correctamente
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public boolean eliminar(int idCaracteristica) throws SQLException {
+        String sql = "DELETE FROM caracteristica WHERE id_caracteristica = ?";
+
+        try (Connection conn = ConexionDB.obtenerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, idCaracteristica);
+            return ps.executeUpdate() > 0;
+        }
+    }
 }

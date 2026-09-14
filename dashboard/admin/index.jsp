@@ -26,7 +26,7 @@
 
                 <div class="row g-4 mt-4">
                     <div class="col-md-3 col-sm-6">
-                        <a href="#" class="text-decoration-none">
+                        <a href="${pageContext.request.contextPath}/AdminUsuarioServlet" class="text-decoration-none">
                             <div class="card panel-card h-100">
                                 <div class="card-body text-center">
                                     <i class="bi bi-people-fill fs-1" style="color:var(--gold);"></i>
@@ -54,6 +54,17 @@
                                     <i class="bi bi-bar-chart-fill fs-1" style="color:var(--gold);"></i>
                                     <h5 class="mt-2 text-dark">Reportes</h5>
                                     <p class="text-muted small mb-0">Estadisticas del sistema</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <a href="${pageContext.request.contextPath}/AdminParametrosServlet" class="text-decoration-none">
+                            <div class="card panel-card h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-sliders fs-1" style="color:var(--gold);"></i>
+                                    <h5 class="mt-2 text-dark">Parametros</h5>
+                                    <p class="text-muted small mb-0">Ciudades, tipos y caracteristicas</p>
                                 </div>
                             </div>
                         </a>

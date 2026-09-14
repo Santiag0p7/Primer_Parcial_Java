@@ -116,6 +116,26 @@
         <url-pattern>/SolicitudServlet</url-pattern>
     </servlet-mapping>
 
+    <!-- Administracion Global: Gestion de Usuarios (Sprint 3 - Item 2) -->
+    <servlet>
+        <servlet-name>AdminUsuarioServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.AdminUsuarioServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminUsuarioServlet</servlet-name>
+        <url-pattern>/AdminUsuarioServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- Administracion Global: Mantenimiento de Parametros (Sprint 3 - Item 2) -->
+    <servlet>
+        <servlet-name>AdminParametrosServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.AdminParametrosServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminParametrosServlet</servlet-name>
+        <url-pattern>/AdminParametrosServlet</url-pattern>
+    </servlet-mapping>
+
     <!-- ==========================================
          FILTROS - Seguridad
          ========================================== -->

@@ -159,12 +159,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="${ctx}/dashboard/admin/index.jsp#usuarios">
+                        <a class="nav-link" href="${ctx}/AdminUsuarioServlet">
                             <i class="bi bi-people me-1"></i> Gestionar Usuarios
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="${ctx}/dashboard/admin/index.jsp#parametros">
+                        <a class="nav-link" href="${ctx}/AdminParametrosServlet">
                             <i class="bi bi-sliders me-1"></i> Parametros
                         </a>
                     </li>

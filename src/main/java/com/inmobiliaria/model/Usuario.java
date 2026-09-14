@@ -17,6 +17,10 @@ public class Usuario implements Serializable {
     private boolean estado;
     private LocalDateTime fechaRegistro;
 
+    // Campos auxiliares para la administracion de usuarios (JOIN con rol)
+    private int idRol;
+    private String nombreRol;
+
     // Constructor vacio
     public Usuario() {
     }
@@ -70,6 +74,22 @@ public class Usuario implements Serializable {
 
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public int getIdRol() {
+        return idRol;
+    }
+
+    public void setIdRol(int idRol) {
+        this.idRol = idRol;
+    }
+
+    public String getNombreRol() {
+        return nombreRol;
+    }
+
+    public void setNombreRol(String nombreRol) {
+        this.nombreRol = nombreRol;
     }
 
     @Override
