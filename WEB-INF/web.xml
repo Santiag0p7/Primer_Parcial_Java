@@ -106,6 +106,16 @@
         <url-pattern>/ReporteServlet</url-pattern>
     </servlet-mapping>
 
+    <!-- Sistema de Solicitud de Citas y Agendamiento (Sprint 3 - Item 1) -->
+    <servlet>
+        <servlet-name>SolicitudServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.SolicitudServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SolicitudServlet</servlet-name>
+        <url-pattern>/SolicitudServlet</url-pattern>
+    </servlet-mapping>
+
     <!-- ==========================================
          FILTROS - Seguridad
          ========================================== -->

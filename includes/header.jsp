@@ -71,7 +71,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="${ctx}/dashboard/cliente/index.jsp#solicitudes">
+                        <a class="nav-link" href="${ctx}/SolicitudServlet">
                             <i class="bi bi-calendar-check me-1"></i> Mis Citas/Solicitudes
                         </a>
                     </li>
@@ -112,6 +112,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="${ctx}/PropiedadServlet?action=list">
                             <i class="bi bi-house-heart me-1"></i> Mis Propiedades
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${ctx}/SolicitudServlet">
+                            <i class="bi bi-calendar2-week me-1"></i> Solicitudes
                         </a>
                     </li>
                     <li class="nav-item">

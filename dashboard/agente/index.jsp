@@ -48,12 +48,12 @@
                         </a>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <a href="#" class="text-decoration-none">
+                        <a href="${pageContext.request.contextPath}/SolicitudServlet" class="text-decoration-none">
                             <div class="card panel-card h-100">
                                 <div class="card-body text-center">
-                                    <i class="bi bi-chat-dots-fill fs-1" style="color:var(--gold);"></i>
-                                    <h5 class="mt-2 text-dark">Consultas</h5>
-                                    <p class="text-muted small mb-0">Pendientes de respuesta</p>
+                                    <i class="bi bi-calendar2-week-fill fs-1" style="color:var(--gold);"></i>
+                                    <h5 class="mt-2 text-dark">Solicitudes</h5>
+                                    <p class="text-muted small mb-0">Citas por gestionar</p>
                                 </div>
                             </div>
                         </a>

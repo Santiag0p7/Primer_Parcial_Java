@@ -335,6 +335,7 @@ public class PropiedadServlet extends HttpServlet {
         request.setAttribute("propiedad", propiedad);
         request.setAttribute("imagenes", imagenDAO.listarPorPropiedad(id));
         request.setAttribute("caracteristicas", caracteristicaDAO.listarPorPropiedad(id));
+        request.setAttribute("fechaMinima", java.time.LocalDate.now().toString());
         request.setAttribute("tituloPagina", propiedad.getTitulo() + " - Inmobiliaria UTS");
         request.getRequestDispatcher("/detalle_propiedad.jsp")
                .forward(request, response);

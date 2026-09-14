@@ -110,15 +110,21 @@
                             </div>
 
                             <c:choose>
+                                <c:when test="${sessionScope.rol == 'CLIENTE'}">
+                                    <button type="button" class="btn btn-gold w-100"
+                                            data-bs-toggle="modal" data-bs-target="#modalAgendar">
+                                        <i class="bi bi-calendar-plus me-2"></i> Agendar visita
+                                    </button>
+                                </c:when>
                                 <c:when test="${not empty sessionScope.idUsuario}">
-                                    <button type="button" class="btn btn-gold w-100" disabled>
-                                        <i class="bi bi-calendar-check me-2"></i> Agendar visita (proximamente)
+                                    <button type="button" class="btn btn-secondary w-100" disabled>
+                                        <i class="bi bi-info-circle me-2"></i> Solo los clientes pueden agendar visitas
                                     </button>
                                 </c:when>
                                 <c:otherwise>
                                     <a href="${pageContext.request.contextPath}/LoginServlet"
                                        class="btn btn-gold w-100">
-                                        <i class="bi bi-box-arrow-in-right me-2"></i> Inicia sesion para agendar
+                                        <i class="bi bi-box-arrow-in-right me-2"></i> Inicie sesion para agendar cita
                                     </a>
                                 </c:otherwise>
                             </c:choose>
@@ -168,5 +174,60 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal de agendamiento de visita (solo CLIENTE) -->
+    <c:if test="${sessionScope.rol == 'CLIENTE'}">
+        <div class="modal fade" id="modalAgendar" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form action="${pageContext.request.contextPath}/SolicitudServlet" method="post"
+                      class="modal-content">
+                    <input type="hidden" name="idPropiedad" value="${propiedad.idPropiedad}">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="bi bi-calendar-plus text-gold me-2"></i>Agendar visita
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p class="mb-3">
+                            Propiedad: <strong>${propiedad.titulo}</strong>
+                        </p>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label for="fechaVisita" class="form-label fw-semibold">
+                                    Fecha <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" class="form-control" id="fechaVisita"
+                                       name="fechaVisita" required min="${fechaMinima}">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="horaVisita" class="form-label fw-semibold">
+                                    Hora <span class="text-danger">*</span>
+                                </label>
+                                <input type="time" class="form-control" id="horaVisita"
+                                       name="horaVisita" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="comentario" class="form-label fw-semibold">Comentario</label>
+                                <textarea class="form-control" id="comentario" name="comentario"
+                                          rows="3" maxlength="500"
+                                          placeholder="Cuentanos si prefieres algun horario especial..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-gold">
+                            <i class="bi bi-send me-1"></i> Enviar solicitud
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </c:if>
 
 <%@ include file="/includes/footer.jsp"%>
