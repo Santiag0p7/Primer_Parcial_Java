@@ -206,9 +206,9 @@ CREATE TABLE solicitud (
     observacion VARCHAR(500),
     fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_solicitud_propiedad FOREIGN KEY (id_propiedad)
+    CONSTRAINT fk_solicitud_compra_propiedad FOREIGN KEY (id_propiedad)
         REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_solicitud_cliente FOREIGN KEY (id_cliente)
+    CONSTRAINT fk_solicitud_compra_cliente FOREIGN KEY (id_cliente)
         REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
