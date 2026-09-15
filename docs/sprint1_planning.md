@@ -46,4 +46,24 @@
   - [ ] Redirección automática a página de acceso denegado si intenta ingresar escribiendo la URL directamente sin permisos.
 
   ## Evidencia del Tablero Kanban
-![Tablero Scrum Sprint 1](img/tablero_sprint1.png)
+![Tablero Scrum Sprint 1](img/imagen_sprint1.png)
+
+---
+
+## Sprint Review (Sprint 1)
+
+- **Incremento demostrado:** landing page pública responsiva, registro de usuarios con
+  correo único y contraseña cifrada (BCrypt), inicio/cierre de sesión y control de
+  acceso por roles mediante `AuthFilter`.
+- **Historias aceptadas:** HU-01 (landing), HU-02 (registro), HU-03 (login), HU-04 (filtro de roles).
+- **Criterios de aceptación:** cumplidos; el sistema redirige al panel según el rol y
+  bloquea el acceso directo por URL a rutas no autorizadas.
+- **Feedback del Product Owner:** continuar con el CRUD de propiedades y las relaciones
+  del modelo de datos (1:N y N:M).
+
+## Sprint Retrospective (Sprint 1)
+
+- **Qué funcionó bien:** la separación MVC y el hashing con BCrypt.
+- **Qué mejorar:** centralizar la configuración de conexión y documentar el tablero.
+- **Acciones para el Sprint 2:** implementar transacciones JDBC para las relaciones
+  N:M y reutilizar `header.jsp` para la navegación dinámica por rol.

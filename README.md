@@ -149,18 +149,20 @@ La página de inicio es la landing page pública; desde ahí puedes registrarte 
 | Script | Contenido |
 |--------|-----------|
 | `db/proyecto_completo.sql` | **Consolidado final**: DDL + DML completo (recomendado). |
-| `db/sprint1.sql` | Roles, usuarios, perfiles y autenticación. |
-| `db/sprint2.sql` | Propiedades, imágenes, características y catálogos. |
-| `db/sprint3.sql` | Solicitudes de visita/citas. |
-| `db/sprint3_item2.sql` | Departamento en ciudades (parámetros). |
-| `db/datos_demo_reportes.sql` | Datos de demostración para reportes. |
+| `db/expo_datos.sql` | Datos de exposición: borra filas y recarga con IDs consecutivos (crea las tablas nuevas si faltan). |
+| `db/sprints/sprint1.sql` ... `sprint3_item2.sql` | Scripts incrementales por sprint (evidencia Scrum). |
+| `db/migrations/favoritos.sql` | Crea la tabla `favorito` en una BD ya existente. |
+| `db/migrations/solicitudes.sql` | Crea `solicitud` y `documento_solicitud` en una BD ya existente. |
+| `db/migrations/citas_unique.sql` | Agrega la restricción UNIQUE de horarios a una BD ya existente. |
 
 Modelo de datos principal:
 
 - `usuario`, `rol`, `usuario_rol` (N:M), `perfil` (1:1)
 - `propiedad`, `tipo_propiedad`, `ciudad`
 - `imagen_propiedad` (1:N), `caracteristica`, `propiedad_caracteristica` (N:M)
-- `solicitud_visita`
+- `solicitud_visita` (citas)
+- `solicitud` (compra/arriendo), `documento_solicitud` (1:N)
+- `favorito` (N:M usuario–propiedad)
 
 ---
 
@@ -259,10 +261,15 @@ Primer_Parcial_Java/
 │   ├── cliente/        # Panel del cliente (citas)
 │   └── mi_perfil.jsp
 ├── includes/           # header.jsp, footer.jsp
-├── db/                 # Scripts SQL (proyecto_completo.sql + por sprint)
-├── docs/               # Planificación Scrum y evidencias
+├── db/                 # Scripts SQL
+│   ├── proyecto_completo.sql   # Esquema + datos (recomendado)
+│   ├── expo_datos.sql          # Datos de exposición
+│   ├── sprints/                # Scripts incrementales por sprint
+│   └── migrations/             # Parches para BD existente
+├── docs/               # Scrum, modelo de datos, casos de uso y evidencias
 ├── assets/             # CSS, JS e imágenes
 ├── conexion.jspf       # ÚNICA configuración de conexión (local / en línea)
+├── Dockerfile / render.yaml / docker-entrypoint.sh  # Despliegue en línea
 ├── WEB-INF/
 │   ├── web.xml         # Mapeo de servlets, filtros y listener
 │   ├── classes/        # Clases compiladas (no versionadas)

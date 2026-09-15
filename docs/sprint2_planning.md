@@ -74,7 +74,7 @@
   - [x] Despliegue funcional desde `dashboard/agente/galeria_propiedad.jsp`.
 - **Implementación:**
   - DAO: `ImagenPropiedadDAO` (inserción masiva con `setAutoCommit(false)`, `commit()` y `rollback()`).
-  - Relación 1:N definida en `db/sprint2.sql`:
+  - Relación 1:N definida en `db/sprints/sprint2.sql`:
     ```sql
     CREATE TABLE imagen_propiedad (
         id_imagen    INT AUTO_INCREMENT PRIMARY KEY,
@@ -168,11 +168,11 @@
 | Modelos | `Propiedad`, `ImagenPropiedad`, `Caracteristica`, `Perfil`, `Ciudad`, `TipoPropiedad`, `PropiedadReporte`, `ConteoCiudad` |
 
 ### Script SQL Acumulado del Sprint 2
-- **Archivo:** `db/sprint2.sql`
+- **Archivo:** `db/sprints/sprint2.sql`
 - **Tablas creadas:** `tipo_propiedad`, `ciudad`, `propiedad`, `imagen_propiedad`, `caracteristica`, `propiedad_caracteristica`.
 - **Ajuste complementario:** `ALTER TABLE perfil ADD COLUMN fecha_actualizacion ...` (relación 1:1).
 - **Datos semilla:** catálogos de tipos de propiedad y características.
-- **Datos de demo:** `db/datos_demo_reportes.sql` (propiedades e imágenes para validar los reportes).
+- **Datos de demo:** `db/expo_datos.sql` (propiedades, imágenes y citas para validar los reportes).
 
 ---
 
@@ -189,3 +189,24 @@
 
 ## Evidencia del Tablero Kanban
 ![Tablero Scrum Sprint 2](img/imagen_sprint2.png)
+
+---
+
+## Sprint Review (Sprint 2)
+
+- **Incremento demostrado:** CRUD de propiedades con matrícula única (UNIQUE) y baja
+  lógica, galería de imágenes (1:N), asignación transaccional de características (N:M),
+  buscador con filtros, ficha de detalle y perfil de usuario (1:1).
+- **Historias aceptadas:** HU-05 a HU-10.
+- **Criterios de aceptación:** cumplidos; las propiedades desactivadas no aparecen en el
+  catálogo y la edición está restringida al dueño.
+- **Feedback del Product Owner:** avanzar con citas/solicitudes y los reportes con
+  consultas de agregación.
+
+## Sprint Retrospective (Sprint 2)
+
+- **Qué funcionó bien:** las transacciones JDBC coordinadas (propiedad + características + galería).
+- **Qué mejorar:** ampliar los reportes y unificar los datos de prueba.
+- **Acciones para el Sprint 3:** implementar citas, solicitudes con documentos, favoritos,
+  reportes y el despliegue.
+

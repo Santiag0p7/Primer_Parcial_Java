@@ -35,6 +35,8 @@ erDiagram
 > [https://mermaid.live](https://mermaid.live) pegando el bloque anterior
 > (exportar como PNG/PDF para el entregable).
 
+![MER (conceptual)](img/mer.png)
+
 ---
 
 ## 2. Modelo Relacional (3FN)
@@ -67,6 +69,8 @@ solicitud               (id_solicitud PK, id_propiedad FK->propiedad, id_cliente
 documento_solicitud     (id_documento PK, id_solicitud FK->solicitud,
                          tipo, nombre, url_documento, fecha_carga)
 ```
+
+![Modelo Relacional](img/modelo_relacional.png)
 
 ---
 

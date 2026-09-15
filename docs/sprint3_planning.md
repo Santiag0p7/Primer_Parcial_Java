@@ -91,7 +91,7 @@
   - [x] `AdminParametrosServlet` (parámetros `entidad`, `operacion`, `id`, `nombre`, `departamento`).
   - [x] `CiudadDAO`, `TipoPropiedadDAO`, `CaracteristicaDAO` (operaciones `insertar`/`actualizar`/`eliminar`).
   - [x] Vista `dashboard/admin/gestion_parametros.jsp` (pestañas: ciudades, tipos, características).
-  - [x] Script `db/sprint3_item2.sql` (columna `departamento` en `ciudad`).
+  - [x] Script `db/sprints/sprint3_item2.sql` (columna `departamento` en `ciudad`).
 
 ### HU-15: Métricas del Dashboard, Consolidado SQL Final y Tag Git v1.0.0
 - **Como:** Administrador / Equipo de desarrollo
@@ -151,3 +151,26 @@
 
 ## Evidencia del Tablero Kanban
 ![Tablero Scrum Sprint 3](img/imagen_sprint3.png)
+
+---
+
+## Sprint Review (Sprint 3)
+
+- **Incremento demostrado:** sistema de citas/solicitudes de visita, módulo de
+  solicitudes de compra/arriendo con radicación y aprobación de documentos, panel de
+  administración (usuarios, roles y parámetros), favoritos, reportes con consultas de
+  agregación, métricas del dashboard y despliegue en línea (Render + Clever Cloud).
+- **Historias aceptadas:** HU-11 a HU-15 (incluidas favoritos y reportes adicionales).
+- **Criterios de aceptación:** cumplidos; control de acceso validado en servidor y
+  captura de errores UNIQUE con mensajes amigables.
+- **Feedback del Product Owner:** cerrar la documentación (MER, modelo relacional,
+  diccionario de datos y casos de uso) y preparar la sustentación.
+
+## Sprint Retrospective (Sprint 3)
+
+- **Qué funcionó bien:** la integración continua con Git y el despliegue con Docker/Render.
+- **Qué mejorar:** verificar compatibilidad de sintaxis SQL entre MySQL y MariaDB y
+  depurar los scripts del repositorio.
+- **Acciones de cierre:** versionar la entrega (`v1.0.0`), consolidar la documentación
+  y ensayar la sustentación del modelo de datos.
+
