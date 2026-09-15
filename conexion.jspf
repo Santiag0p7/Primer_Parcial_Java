@@ -16,11 +16,11 @@
     // ============================================================
     // CONFIGURACION - CLEVER CLOUD (MySQL)
     // ============================================================
-    String DB_HOST    = "TU_HOST_CLEVER";
+    String DB_HOST    = "btlvt8r2avgfr0mrpr5l-mysql.services.clever-cloud.com";
     int    DB_PORT    = 3306;
-    String DB_NOMBRE  = "TU_DATABASE_CLEVER";
-    String DB_USUARIO = "TU_USER_CLEVER";
-    String DB_PASS    = "TU_PASSWORD_CLEVER";
+    String DB_NOMBRE  = "btlvt8r2avgfr0mrpr5l";
+    String DB_USUARIO = "ubhpamjwigrettjh";
+    String DB_PASS    = "5kaxbR85XPlOg7Ln7zb1";
 
     // ----- LOCAL (XAMPP, referencia: comenta las de arriba y descomenta estas) -----
     // String DB_HOST    = "localhost";
