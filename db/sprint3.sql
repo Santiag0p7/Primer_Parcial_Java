@@ -23,10 +23,10 @@ CREATE TABLE IF NOT EXISTS solicitud_visita (
 );
 
 -- Indices de apoyo para las consultas por cliente y por inmobiliaria
-CREATE INDEX IF NOT EXISTS idx_solicitud_cliente ON solicitud_visita (id_cliente);
-CREATE INDEX IF NOT EXISTS idx_solicitud_propiedad ON solicitud_visita (id_propiedad);
+CREATE INDEX idx_solicitud_cliente ON solicitud_visita (id_cliente);
+CREATE INDEX idx_solicitud_propiedad ON solicitud_visita (id_propiedad);
 
 -- Restriccion UNIQUE: evita agendar dos visitas a la misma propiedad en el
 -- mismo horario (id_propiedad, fecha_visita, hora_visita).
 ALTER TABLE solicitud_visita
-    ADD UNIQUE INDEX IF NOT EXISTS uq_cita_horario (id_propiedad, fecha_visita, hora_visita);
+    ADD UNIQUE INDEX uq_cita_horario (id_propiedad, fecha_visita, hora_visita);
