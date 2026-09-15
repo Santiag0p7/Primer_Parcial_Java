@@ -23,6 +23,8 @@ USE inmobiliaria;
 -- ============================================================
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS documento_solicitud;
+DROP TABLE IF EXISTS solicitud;
 DROP TABLE IF EXISTS favorito;
 DROP TABLE IF EXISTS solicitud_visita;
 DROP TABLE IF EXISTS propiedad_caracteristica;
@@ -189,7 +191,41 @@ CREATE TABLE favorito (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- 5. DATOS DE PRUEBA (DML)
+-- 5. SOLICITUDES DE COMPRA / ARRIENDO Y DOCUMENTOS (Sprint 3)
+-- ============================================================
+
+-- Tabla: SOLICITUD (tramite de compra o arriendo radicado por el cliente)
+CREATE TABLE solicitud (
+    id_solicitud INT AUTO_INCREMENT PRIMARY KEY,
+    id_propiedad INT NOT NULL,
+    id_cliente INT NOT NULL,
+    tipo VARCHAR(20) NOT NULL DEFAULT 'COMPRA',      -- COMPRA | ARRIENDO
+    monto_oferta DECIMAL(14,2) NULL,
+    mensaje VARCHAR(500),
+    estado VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE', -- PENDIENTE | EN_REVISION | APROBADA | RECHAZADA | CANCELADA
+    observacion VARCHAR(500),
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_solicitud_propiedad FOREIGN KEY (id_propiedad)
+        REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_solicitud_cliente FOREIGN KEY (id_cliente)
+        REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- Tabla: DOCUMENTO_SOLICITUD (documentos radicados, relacion 1:N con solicitud)
+CREATE TABLE documento_solicitud (
+    id_documento INT AUTO_INCREMENT PRIMARY KEY,
+    id_solicitud INT NOT NULL,
+    tipo VARCHAR(50),
+    nombre VARCHAR(150) NOT NULL,
+    url_documento VARCHAR(500) NOT NULL,
+    fecha_carga DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_documento_solicitud FOREIGN KEY (id_solicitud)
+        REFERENCES solicitud(id_solicitud) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================================================
+-- 6. DATOS DE PRUEBA (DML)
 -- ============================================================
 
 -- Roles
@@ -287,7 +323,7 @@ INSERT INTO solicitud_visita (id_propiedad, id_cliente, fecha_visita, hora_visit
     'Disponible para visitar el apartamento.', 'CONFIRMADA');
 
 -- ============================================================
--- 6. VERIFICACION (opcional)
+-- 7. VERIFICACION (opcional)
 -- ============================================================
 -- SELECT COUNT(*) AS propiedades_activas FROM propiedad WHERE estado_logico = TRUE;
 -- SELECT COUNT(*) AS solicitudes_pendientes FROM solicitud_visita WHERE estado = 'PENDIENTE';

@@ -151,6 +151,14 @@
                                     </c:choose>
                                 </form>
                             </c:if>
+
+                            <%-- Radicar solicitud de compra/arriendo (solo CLIENTE) --%>
+                            <c:if test="${sessionScope.rol == 'CLIENTE'}">
+                                <button type="button" class="btn btn-outline-primary w-100 mt-2"
+                                        data-bs-toggle="modal" data-bs-target="#modalSolicitud">
+                                    <i class="bi bi-file-earmark-plus me-2"></i> Solicitar compra / arriendo
+                                </button>
+                            </c:if>
                         </div>
                     </div>
                 </div>
@@ -246,6 +254,57 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-gold">
                             <i class="bi bi-send me-1"></i> Enviar solicitud
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </c:if>
+
+    <!-- Modal de solicitud de compra/arriendo (solo CLIENTE) -->
+    <c:if test="${sessionScope.rol == 'CLIENTE'}">
+        <div class="modal fade" id="modalSolicitud" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form action="${pageContext.request.contextPath}/SolicitudCompraServlet" method="post"
+                      class="modal-content">
+                    <input type="hidden" name="action" value="crear">
+                    <input type="hidden" name="idPropiedad" value="${propiedad.idPropiedad}">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="bi bi-file-earmark-plus text-gold me-2"></i>Solicitar compra / arriendo
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p class="mb-3">Propiedad: <strong>${propiedad.titulo}</strong></p>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Tipo de solicitud <span class="text-danger">*</span></label>
+                                <select name="tipo" class="form-select" required>
+                                    <option value="COMPRA">Compra</option>
+                                    <option value="ARRIENDO">Arriendo</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold">Monto oferta (opcional)</label>
+                                <input type="number" name="montoOferta" class="form-control" min="0" step="1000"
+                                       placeholder="Ej: 400000000">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Mensaje</label>
+                                <textarea name="mensaje" class="form-control" rows="3" maxlength="500"
+                                          placeholder="Cuentanos tu interes..."></textarea>
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-0 mt-2">Despues de radicarla podras adjuntar tus documentos.</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-gold">
+                            <i class="bi bi-send me-1"></i> Radicar solicitud
                         </button>
                     </div>
                 </form>

@@ -105,6 +105,17 @@
                         </a>
                     </div>
                     <div class="col-md-3 col-sm-6">
+                        <a href="${pageContext.request.contextPath}/SolicitudCompraServlet" class="text-decoration-none">
+                            <div class="card panel-card h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-file-earmark-check-fill fs-1" style="color:var(--gold);"></i>
+                                    <h5 class="mt-2 text-dark">Compra/Arriendo</h5>
+                                    <p class="text-muted small mb-0">Aprobar solicitudes y documentos</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
                         <a href="${pageContext.request.contextPath}/PerfilServlet" class="text-decoration-none">
                             <div class="card panel-card h-100">
                                 <div class="card-body text-center">

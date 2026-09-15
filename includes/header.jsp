@@ -76,6 +76,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="${ctx}/SolicitudCompraServlet">
+                            <i class="bi bi-file-earmark-text me-1"></i> Mis Tramites
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="${ctx}/FavoritoServlet">
                             <i class="bi bi-heart me-1"></i> Mis Favoritos
                         </a>
@@ -122,6 +127,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="${ctx}/SolicitudServlet">
                             <i class="bi bi-calendar2-week me-1"></i> Solicitudes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${ctx}/SolicitudCompraServlet">
+                            <i class="bi bi-file-earmark-check me-1"></i> Compra/Arriendo
                         </a>
                     </li>
                     <li class="nav-item">

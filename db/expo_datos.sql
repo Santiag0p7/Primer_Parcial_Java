@@ -24,8 +24,39 @@ CREATE TABLE IF NOT EXISTS favorito (
         REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+-- Tablas de solicitudes de compra/arriendo y documentos (por si no existieran)
+CREATE TABLE IF NOT EXISTS solicitud (
+    id_solicitud INT AUTO_INCREMENT PRIMARY KEY,
+    id_propiedad INT NOT NULL,
+    id_cliente INT NOT NULL,
+    tipo VARCHAR(20) NOT NULL DEFAULT 'COMPRA',
+    monto_oferta DECIMAL(14,2) NULL,
+    mensaje VARCHAR(500),
+    estado VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
+    observacion VARCHAR(500),
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_solicitud_propiedad FOREIGN KEY (id_propiedad)
+        REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_solicitud_cliente FOREIGN KEY (id_cliente)
+        REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS documento_solicitud (
+    id_documento INT AUTO_INCREMENT PRIMARY KEY,
+    id_solicitud INT NOT NULL,
+    tipo VARCHAR(50),
+    nombre VARCHAR(150) NOT NULL,
+    url_documento VARCHAR(500) NOT NULL,
+    fecha_carga DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_documento_solicitud FOREIGN KEY (id_solicitud)
+        REFERENCES solicitud(id_solicitud) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 -- Borra SOLO los datos (mantiene la estructura de las tablas)
 SET FOREIGN_KEY_CHECKS = 0;
+DELETE FROM documento_solicitud;
+DELETE FROM solicitud;
 DELETE FROM favorito;
 DELETE FROM solicitud_visita;
 DELETE FROM propiedad_caracteristica;
@@ -50,6 +81,8 @@ ALTER TABLE rol AUTO_INCREMENT = 1;
 ALTER TABLE tipo_propiedad AUTO_INCREMENT = 1;
 ALTER TABLE ciudad AUTO_INCREMENT = 1;
 ALTER TABLE caracteristica AUTO_INCREMENT = 1;
+ALTER TABLE solicitud AUTO_INCREMENT = 1;
+ALTER TABLE documento_solicitud AUTO_INCREMENT = 1;
 
 -- ============================================================
 -- DATOS
@@ -361,6 +394,20 @@ FROM (
 ) x
 JOIN propiedad p ON p.matricula_inmobiliaria = x.mat
 JOIN usuario   u ON u.correo = x.correo;
+
+-- ============================================================
+-- 6b. SOLICITUDES DE COMPRA / ARRIENDO Y DOCUMENTOS (ejemplos)
+-- ============================================================
+INSERT INTO solicitud (id_solicitud, id_propiedad, id_cliente, tipo, monto_oferta, mensaje, estado, observacion) VALUES
+(1, 5, 4, 'COMPRA',   400000000.00, 'Estoy interesado en la casa.',    'PENDIENTE',   NULL),
+(2, 6, 5, 'ARRIENDO',   1500000.00, 'Quiero arrendar el apartamento.', 'EN_REVISION', 'Revisando documentos.'),
+(3, 7, 6, 'COMPRA',   250000000.00, 'Oferta por la casa campestre.',   'APROBADA',    'Documentacion completa.');
+
+INSERT INTO documento_solicitud (id_documento, id_solicitud, tipo, nombre, url_documento) VALUES
+(1, 1, 'CEDULA',    'Cedula de ciudadania',  'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
+(2, 2, 'INGRESOS',  'Certificado laboral',   'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
+(3, 2, 'EXTRACTOS', 'Extractos bancarios',  'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
+(4, 3, 'ESCRITURA', 'Escritura del inmueble','https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
 
 -- ============================================================
 -- 6. VERIFICACION

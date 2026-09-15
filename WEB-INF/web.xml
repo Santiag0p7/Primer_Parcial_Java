@@ -175,6 +175,16 @@
         <url-pattern>/FavoritoServlet</url-pattern>
     </servlet-mapping>
 
+    <!-- Modulo de Solicitudes de compra/arriendo y documentos -->
+    <servlet>
+        <servlet-name>SolicitudCompraServlet</servlet-name>
+        <servlet-class>com.inmobiliaria.controller.SolicitudCompraServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SolicitudCompraServlet</servlet-name>
+        <url-pattern>/SolicitudCompraServlet</url-pattern>
+    </servlet-mapping>
+
     <!-- ==========================================
          FILTROS - Seguridad
          ========================================== -->
