@@ -178,44 +178,40 @@ Modelo de datos principal:
 
 ## Configuración de la conexión JDBC
 
-Toda la configuración vive en **un único archivo** ubicado en la **raíz del proyecto**: `conexion.jspf`. Lo leen tanto la capa Java (`com.inmobiliaria.util.ConexionDB` / DAOs, vía `AppConfigListener`) como los JSP (con `<%@ include file="/conexion.jspf" %>`). Para pasar de una base de datos **local** a una **en línea** solo editas este archivo, sin recompilar ni tocar el resto del código.
+La configuración es **externa** y se resuelve por prioridad, de mayor a menor:
 
-```jsp
-<%-- conexion.jspf (raíz del proyecto) --%>
-// ----- LOCAL (XAMPP por defecto) -----
-String DB_HOST    = "localhost";
-int    DB_PORT    = 3306;
-String DB_NOMBRE  = "inmobiliaria";
-String DB_USUARIO = "root";
-String DB_PASS    = "";
-```
+1. **Variables de entorno** (recomendado, ideal para Render/producción): `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
+2. Propiedad del sistema JVM (`-Ddb.host=...`).
+3. Archivo `conexion.jspf` de la raíz (desarrollo local).
+4. Valores por defecto (XAMPP: `localhost` / `3306` / `inmobiliaria` / `root`).
 
-Ejemplo para **base de datos en línea** (comenta las de arriba y descomenta estas):
-
-```jsp
-String DB_HOST    = "miservidor.database.com";
-int    DB_PORT    = 3306;
-String DB_NOMBRE  = "inmobiliaria";
-String DB_USUARIO = "usuario_remoto";
-String DB_PASS    = "tu_password_seguro";
-```
-
-`AppConfigListener` lee `conexion.jspf` al arrancar Tomcat, extrae las variables y las expone a `ConexionDB`. Si el archivo no existe o falla, la app usa valores por defecto / variables de entorno sin romperse.
-
-Además, cada parámetro puede sobreescribirse sin editar el archivo, en este orden de prioridad:
-
-1. `conexion.jspf` (recomendado)
-2. Propiedad del sistema JVM (`-Ddb.host=...`)
-3. Variable de entorno (`DB_HOST`)
-4. Valor por defecto (XAMPP)
-
-| Parámetro | Variable en `conexion.jspf` | Variable de entorno | Valor por defecto |
-|-----------|-----------------------------|---------------------|-------------------|
+| Parámetro | Variable de entorno | Clave en `conexion.jspf` | Valor por defecto |
+|-----------|---------------------|--------------------------|-------------------|
 | Host | `DB_HOST` | `DB_HOST` | `localhost` |
 | Puerto | `DB_PORT` | `DB_PORT` | `3306` |
-| Base de datos | `DB_NOMBRE` | `DB_NAME` | `inmobiliaria` |
-| Usuario | `DB_USUARIO` | `DB_USER` | `root` |
-| Contraseña | `DB_PASS` | `DB_PASSWORD` | *(vacío)* |
+| Base de datos | `DB_NAME` | `DB_NOMBRE` | `inmobiliaria` |
+| Usuario | `DB_USER` | `DB_USUARIO` | `root` |
+| Contraseña | `DB_PASSWORD` | `DB_PASS` | *(vacío)* |
+
+### Despliegue en Render
+
+Define las variables de entorno en el panel del servicio (**Environment**) y no versiones credenciales:
+
+```
+DB_HOST=btlvt8r2avgfr0mrpr5l-mysql.services.clever-cloud.com
+DB_PORT=3306
+DB_NAME=btlvt8r2avgfr0mrpr5l
+DB_USER=ubhpamjwigrettjh
+DB_PASSWORD=********
+```
+
+La URL JDBC se construye internamente con los parámetros obligatorios:
+
+```
+jdbc:mysql://HOST:3306/DB?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+```
+
+`AppConfigListener` lee `conexion.jspf` al arrancar Tomcat solo como respaldo local; las variables de entorno tienen prioridad. Si no hay nada configurado, la app usa los valores por defecto de XAMPP sin romperse.
 
 ---
 

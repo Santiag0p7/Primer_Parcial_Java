@@ -14,15 +14,23 @@
     // ============================================================
 
     // ============================================================
-    // CONFIGURACION - CLEVER CLOUD (MySQL)
+    // CONFIGURACION DE LA BASE DE DATOS
+    //
+    // PRIORIDAD (mayor a menor):
+    //   1. Variables de entorno: DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
+    //      (usadas en produccion, p.ej. Render).
+    //   2. Este archivo (para desarrollo local).
+    //   3. Valores por defecto (XAMPP: localhost / 3306 / inmobiliaria / root).
+    //
+    // No coloques credenciales reales aqui: define las variables de entorno.
     // ============================================================
-    String DB_HOST    = "btlvt8r2avgfr0mrpr5l-mysql.services.clever-cloud.com";
+    String DB_HOST    = "";
     int    DB_PORT    = 3306;
-    String DB_NOMBRE  = "btlvt8r2avgfr0mrpr5l";
-    String DB_USUARIO = "ubhpamjwigrettjh";
-    String DB_PASS    = "5kaxbR85XPlOg7Ln7zb1";
+    String DB_NOMBRE  = "";
+    String DB_USUARIO = "";
+    String DB_PASS    = "";
 
-    // ----- LOCAL (XAMPP, referencia: comenta las de arriba y descomenta estas) -----
+    // ----- LOCAL (XAMPP, referencia: rellena arriba si no usas variables de entorno) -----
     // String DB_HOST    = "localhost";
     // int    DB_PORT    = 3306;
     // String DB_NOMBRE  = "inmobiliaria";

@@ -9,13 +9,13 @@ import java.sql.SQLException;
  *
  * La configuracion es externa y configurable. Cada parametro se resuelve en
  * este orden de prioridad:
- *   1. Archivo /conexion.jspf (raiz, cargado por AppConfigListener)
+ *   1. Variable de entorno        -> DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
  *   2. Propiedad del sistema JVM  -> -Ddb.host=localhost
- *   3. Variable de entorno        -> DB_HOST=localhost
+ *   3. Archivo /conexion.jspf     -> valores locales (cargado por AppConfigListener)
  *   4. Valor por defecto (XAMPP)  -> localhost / 3306 / inmobiliaria / root / (sin password)
  *
- * Editar el conexion.jspf de la raiz es suficiente para cambiar entre una base
- * de datos local o en linea, sin recompilar ni tocar el resto del codigo.
+ * Las variables de entorno tienen prioridad para desplegar en plataformas como
+ * Render sin modificar el codigo ni versionar credenciales.
  */
 public class ConexionDB {
 
@@ -66,20 +66,27 @@ public class ConexionDB {
 
     /**
      * Resuelve un valor de configuracion aplicando la prioridad
-     * conexion.jspf > propiedad del sistema > variable de entorno > valor por defecto.
+     * variable de entorno > propiedad del sistema > conexion.jspf > valor por defecto.
+     *
+     * Las variables de entorno tienen prioridad para facilitar el despliegue en
+     * plataformas como Render, donde la configuracion se inyecta sin tocar el codigo.
      */
     private static String getConfig(String clave, String envVariable, String defaultValue) {
-        String value = DbConfig.obtener(clave); // 1) /conexion.jspf (raiz)
+        String value = System.getenv(envVariable); // 1) variable de entorno (Render / produccion)
 
-        if (value == null || value.trim().isEmpty()) {
+        if (estaVacio(value)) {
             value = System.getProperty(clave); // 2) -Dclave=valor
         }
 
-        if (value == null || value.trim().isEmpty()) {
-            value = System.getenv(envVariable); // 3) variable de entorno
+        if (estaVacio(value)) {
+            value = DbConfig.obtener(clave); // 3) /conexion.jspf (raiz, local)
         }
 
-        return (value == null || value.trim().isEmpty()) ? defaultValue : value; // 4) default
+        return estaVacio(value) ? defaultValue : value; // 4) default
+    }
+
+    private static boolean estaVacio(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     /**
