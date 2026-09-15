@@ -59,7 +59,7 @@ public class ConexionDB {
 
         String url = "jdbc:mysql://" + host + ":" + port
                 + "/" + db
-                + "?useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true";
+                + "?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
 
         return DriverManager.getConnection(url, user, pass);
     }

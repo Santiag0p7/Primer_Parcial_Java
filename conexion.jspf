@@ -13,23 +13,25 @@
     // capa Java a traves de AppConfigListener -> ConexionDB.
     // ============================================================
 
-    // ----- LOCAL (XAMPP por defecto) -----
-    String DB_HOST    = "localhost";
+    // ============================================================
+    // CONFIGURACION - CLEVER CLOUD (MySQL)
+    // ============================================================
+    String DB_HOST    = "TU_HOST_CLEVER";
     int    DB_PORT    = 3306;
-    String DB_NOMBRE  = "inmobiliaria";
-    String DB_USUARIO = "root";
-    String DB_PASS    = "";
+    String DB_NOMBRE  = "TU_DATABASE_CLEVER";
+    String DB_USUARIO = "TU_USER_CLEVER";
+    String DB_PASS    = "TU_PASSWORD_CLEVER";
 
-    // ----- EN LINEA (ejemplo: comenta las de arriba y descomenta estas) -----
-    // String DB_HOST    = "miservidor.database.com";
+    // ----- LOCAL (XAMPP, referencia: comenta las de arriba y descomenta estas) -----
+    // String DB_HOST    = "localhost";
     // int    DB_PORT    = 3306;
     // String DB_NOMBRE  = "inmobiliaria";
-    // String DB_USUARIO = "usuario_remoto";
-    // String DB_PASS    = "tu_password_seguro";
+    // String DB_USUARIO = "root";
+    // String DB_PASS    = "";
 
     String DB_URL = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT
             + "/" + DB_NOMBRE
-            + "?useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true";
+            + "?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
 
     // Cargar driver una sola vez
     try {
