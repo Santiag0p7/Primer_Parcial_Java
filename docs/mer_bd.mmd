@@ -1,0 +1,123 @@
+%% ============================================================
+%% Diagrama ER "tipo base de datos" (tablas con columnas) - JSGE In-Mobiliaria
+%% Para exportar imagen/PDF: https://mermaid.live  ->  pega este texto -> Actions -> Export
+%% ============================================================
+erDiagram
+    ROL {
+        int id_rol PK
+        varchar nombre UK
+    }
+    USUARIO {
+        int id_usuario PK
+        varchar correo UK
+        varchar password_hash
+        boolean estado
+        datetime fecha_registro
+    }
+    USUARIO_ROL {
+        int id_usuario PK,FK
+        int id_rol PK,FK
+        datetime fecha_asignacion
+    }
+    PERFIL {
+        int id_perfil PK
+        int id_usuario UK,FK
+        varchar nombres
+        varchar apellidos
+        varchar documento UK
+        varchar telefono
+        varchar direccion
+        varchar foto_url
+        datetime fecha_actualizacion
+    }
+    TIPO_PROPIEDAD {
+        int id_tipo PK
+        varchar nombre UK
+    }
+    CIUDAD {
+        int id_ciudad PK
+        varchar nombre UK
+        varchar departamento
+    }
+    PROPIEDAD {
+        int id_propiedad PK
+        varchar matricula_inmobiliaria UK
+        varchar titulo
+        text descripcion
+        decimal precio
+        int habitaciones
+        int banos
+        decimal area_m2
+        varchar direccion
+        boolean estado_logico
+        int id_inmobiliaria FK
+        int id_tipo FK
+        int id_ciudad FK
+        datetime fecha_publicacion
+    }
+    IMAGEN_PROPIEDAD {
+        int id_imagen PK
+        int id_propiedad FK
+        varchar url_imagen
+        boolean es_principal
+    }
+    CARACTERISTICA {
+        int id_caracteristica PK
+        varchar nombre UK
+    }
+    PROPIEDAD_CARACTERISTICA {
+        int id_propiedad PK,FK
+        int id_caracteristica PK,FK
+    }
+    SOLICITUD_VISITA {
+        int id_solicitud PK
+        int id_propiedad FK
+        int id_cliente FK
+        date fecha_visita
+        time hora_visita
+        varchar comentario
+        varchar estado
+        datetime fecha_creacion
+    }
+    FAVORITO {
+        int id_usuario PK,FK
+        int id_propiedad PK,FK
+        datetime fecha_agregado
+    }
+    SOLICITUD {
+        int id_solicitud PK
+        int id_propiedad FK
+        int id_cliente FK
+        varchar tipo
+        decimal monto_oferta
+        varchar mensaje
+        varchar estado
+        varchar observacion
+        datetime fecha_creacion
+        datetime fecha_actualizacion
+    }
+    DOCUMENTO_SOLICITUD {
+        int id_documento PK
+        int id_solicitud FK
+        varchar tipo
+        varchar nombre
+        varchar url_documento
+        datetime fecha_carga
+    }
+
+    ROL                     ||--o{ USUARIO_ROL : asigna
+    USUARIO                 ||--o{ USUARIO_ROL : tiene
+    USUARIO                 ||--|| PERFIL : posee
+    USUARIO                 ||--o{ PROPIEDAD : publica
+    TIPO_PROPIEDAD          ||--o{ PROPIEDAD : clasifica
+    CIUDAD                  ||--o{ PROPIEDAD : ubica
+    PROPIEDAD               ||--o{ IMAGEN_PROPIEDAD : tiene
+    PROPIEDAD               ||--o{ PROPIEDAD_CARACTERISTICA : posee
+    CARACTERISTICA          ||--o{ PROPIEDAD_CARACTERISTICA : aplica
+    PROPIEDAD               ||--o{ SOLICITUD_VISITA : agenda
+    USUARIO                 ||--o{ SOLICITUD_VISITA : solicita
+    USUARIO                 ||--o{ FAVORITO : marca
+    PROPIEDAD               ||--o{ FAVORITO : es_marcada
+    PROPIEDAD               ||--o{ SOLICITUD : genera
+    USUARIO                 ||--o{ SOLICITUD : radica
+    SOLICITUD               ||--o{ DOCUMENTO_SOLICITUD : contiene

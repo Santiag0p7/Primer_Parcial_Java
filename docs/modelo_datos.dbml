@@ -1,0 +1,150 @@
+// ============================================================
+// Diagrama Entidad-Relacion "tipo base de datos" - JSGE In-Mobiliaria
+// Para usar: https://dbdiagram.io  ->  pega TODO este archivo  ->  Export (PNG/PDF)
+// (Tambien funciona en DrawSQL o en cualquier herramienta que acepte DBML)
+// ============================================================
+
+Table rol {
+  id_rol int [pk, increment]
+  nombre varchar(50) [not null, unique, note: 'ADMINISTRADOR | INMOBILIARIA | CLIENTE']
+}
+
+Table usuario {
+  id_usuario int [pk, increment]
+  correo varchar(100) [not null, unique, note: 'Credencial unica de ingreso']
+  password_hash varchar(255) [not null, note: 'BCrypt']
+  estado boolean [default: true, note: 'Cuenta activa/bloqueada']
+  fecha_registro datetime [default: `now()`]
+}
+
+Table usuario_rol {
+  id_usuario int
+  id_rol int
+  fecha_asignacion datetime [default: `now()`]
+  indexes {
+    (id_usuario, id_rol) [pk, note: 'PK compuesta N:M']
+  }
+}
+
+Table perfil {
+  id_perfil int [pk, increment]
+  id_usuario int [not null, unique, note: '1:1 con usuario']
+  nombres varchar(100) [not null]
+  apellidos varchar(100) [not null]
+  documento varchar(20) [not null, unique]
+  telefono varchar(20)
+  direccion varchar(150)
+  foto_url varchar(255)
+  fecha_actualizacion datetime
+}
+
+Table tipo_propiedad {
+  id_tipo int [pk, increment]
+  nombre varchar(50) [not null, unique]
+}
+
+Table ciudad {
+  id_ciudad int [pk, increment]
+  nombre varchar(80) [not null, unique]
+  departamento varchar(80)
+}
+
+Table propiedad {
+  id_propiedad int [pk, increment]
+  matricula_inmobiliaria varchar(50) [not null, unique, note: 'Matricula unica']
+  titulo varchar(150) [not null]
+  descripcion text
+  precio decimal(14,2) [not null]
+  habitaciones int [not null, default: 0]
+  banos int [not null, default: 0]
+  area_m2 decimal(10,2) [not null]
+  direccion varchar(180)
+  estado_logico boolean [default: true, note: 'Baja logica: TRUE=activa']
+  id_inmobiliaria int [not null, note: 'FK usuario (inmobiliaria)']
+  id_tipo int [not null]
+  id_ciudad int [not null]
+  fecha_publicacion datetime [default: `now()`]
+}
+
+Table imagen_propiedad {
+  id_imagen int [pk, increment]
+  id_propiedad int [not null]
+  url_imagen varchar(500) [not null]
+  es_principal boolean [default: false]
+}
+
+Table caracteristica {
+  id_caracteristica int [pk, increment]
+  nombre varchar(80) [not null, unique]
+}
+
+Table propiedad_caracteristica {
+  id_propiedad int
+  id_caracteristica int
+  indexes {
+    (id_propiedad, id_caracteristica) [pk, note: 'PK compuesta N:M']
+  }
+}
+
+Table solicitud_visita {
+  id_solicitud int [pk, increment]
+  id_propiedad int [not null]
+  id_cliente int [not null]
+  fecha_visita date [not null]
+  hora_visita time [not null]
+  comentario varchar(500)
+  estado varchar(20) [not null, default: 'PENDIENTE', note: 'PENDIENTE|CONFIRMADA|CANCELADA|REALIZADA']
+  fecha_creacion datetime [default: `now()`]
+  indexes {
+    (id_propiedad, fecha_visita, hora_visita) [unique, name: 'uq_cita_horario']
+  }
+}
+
+Table favorito {
+  id_usuario int
+  id_propiedad int
+  fecha_agregado datetime [default: `now()`]
+  indexes {
+    (id_usuario, id_propiedad) [pk, note: 'PK compuesta N:M']
+  }
+}
+
+Table solicitud {
+  id_solicitud int [pk, increment]
+  id_propiedad int [not null]
+  id_cliente int [not null]
+  tipo varchar(20) [not null, default: 'COMPRA', note: 'COMPRA | ARRIENDO']
+  monto_oferta decimal(14,2)
+  mensaje varchar(500)
+  estado varchar(20) [not null, default: 'PENDIENTE', note: 'PENDIENTE|EN_REVISION|APROBADA|RECHAZADA|CANCELADA']
+  observacion varchar(500)
+  fecha_creacion datetime [default: `now()`]
+  fecha_actualizacion datetime
+}
+
+Table documento_solicitud {
+  id_documento int [pk, increment]
+  id_solicitud int [not null]
+  tipo varchar(50)
+  nombre varchar(150) [not null]
+  url_documento varchar(500) [not null]
+  fecha_carga datetime [default: `now()`]
+}
+
+// ================= RELACIONES =================
+Ref: usuario_rol.id_usuario > usuario.id_usuario
+Ref: usuario_rol.id_rol > rol.id_rol
+Ref: perfil.id_usuario - usuario.id_usuario            // 1:1
+Ref: propiedad.id_inmobiliaria > usuario.id_usuario    // 1:N
+Ref: propiedad.id_tipo > tipo_propiedad.id_tipo
+Ref: propiedad.id_ciudad > ciudad.id_ciudad
+Ref: imagen_propiedad.id_propiedad > propiedad.id_propiedad   // 1:N
+Ref: propiedad_caracteristica.id_propiedad > propiedad.id_propiedad
+Ref: propiedad_caracteristica.id_caracteristica > caracteristica.id_caracteristica
+Ref: solicitud_visita.id_propiedad > propiedad.id_propiedad
+Ref: solicitud_visita.id_cliente > usuario.id_usuario
+Ref: favorito.id_usuario > usuario.id_usuario
+Ref: favorito.id_propiedad > propiedad.id_propiedad
+Ref: solicitud.id_propiedad > propiedad.id_propiedad
+Ref: solicitud.id_cliente > usuario.id_usuario
+Ref: documento_solicitud.id_solicitud > solicitud.id_solicitud  // 1:N
