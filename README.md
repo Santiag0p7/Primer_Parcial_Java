@@ -213,6 +213,16 @@ jdbc:mysql://HOST:3306/DB?allowPublicKeyRetrieval=true&useSSL=false&serverTimezo
 
 `AppConfigListener` lee `conexion.jspf` al arrancar Tomcat solo como respaldo local; las variables de entorno tienen prioridad. Si no hay nada configurado, la app usa los valores por defecto de XAMPP sin romperse.
 
+### Despliegue con Docker / Render
+
+El repositorio incluye:
+
+- `Dockerfile` — imagen `tomcat:9.0-jdk17-temurin` que compila `src/` a `WEB-INF/classes`, despliega la app en `webapps/ROOT` y expone el puerto de Render.
+- `docker-entrypoint.sh` — sincroniza el puerto HTTP de Tomcat con la variable `$PORT` de Render.
+- `render.yaml` — Blueprint opcional para crear el servicio automáticamente.
+
+En Render: **New → Web Service → conectar el repositorio → Environment: Docker**. Luego define las variables `DB_*` en **Environment** y despliega.
+
 ---
 
 ## Metodología Scrum

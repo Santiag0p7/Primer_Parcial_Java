@@ -1,0 +1,24 @@
+# ============================================================
+# Render Blueprint (opcional) - JSGE In-Mobiliaria
+# Permite crear el servicio automaticamente desde el repo.
+# Las credenciales de la BD se configuran en el panel de Render
+# (sync: false) para no exponerlas en el repositorio.
+# ============================================================
+services:
+  - type: web
+    name: jsge-in-mobiliaria
+    env: docker
+    branch: main
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
