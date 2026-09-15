@@ -49,6 +49,12 @@ public class ReporteServlet extends HttpServlet {
                     reporteDAO.listarPropiedadesSinImagenes());
             request.setAttribute("conteoPorCiudad",
                     reporteDAO.contarPropiedadesPorCiudad());
+            request.setAttribute("citasPorEstado",
+                    reporteDAO.contarCitasPorEstado());
+            request.setAttribute("solicitudesPorInmobiliaria",
+                    reporteDAO.listarSolicitudesPorInmobiliaria());
+            request.setAttribute("propiedadesPorEstado",
+                    reporteDAO.contarPropiedadesPorEstado());
 
         } catch (SQLException e) {
             request.setAttribute("errorReportes",

@@ -18,21 +18,30 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <form action="${pageContext.request.contextPath}/buscar" method="get" class="row g-3 align-items-end">
-                        <div class="col-lg-3 col-md-6">
+                        <div class="col-lg-2 col-md-6">
                             <label class="form-label search-label"><i class="bi bi-geo-alt me-1"></i> Ciudad</label>
                             <select name="idCiudad" class="form-select search-select">
-                                <option value="">Todas las ciudades</option>
+                                <option value="">Todas</option>
                                 <c:forEach var="ci" items="${ciudades}">
                                     <option value="${ci.key}" ${filtroCiudad == ci.key ? 'selected' : ''}>${ci.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-6">
+                        <div class="col-lg-2 col-md-6">
                             <label class="form-label search-label"><i class="bi bi-house-door me-1"></i> Tipo</label>
                             <select name="idTipo" class="form-select search-select">
-                                <option value="">Todos los tipos</option>
+                                <option value="">Todos</option>
                                 <c:forEach var="ti" items="${tipos}">
                                     <option value="${ti.key}" ${filtroTipo == ti.key ? 'selected' : ''}>${ti.value}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label search-label"><i class="bi bi-check2-square me-1"></i> Caracteristica</label>
+                            <select name="idCaracteristica" class="form-select search-select">
+                                <option value="">Todas</option>
+                                <c:forEach var="ca" items="${caracteristicas}">
+                                    <option value="${ca.idCaracteristica}" ${filtroCaracteristica == ca.idCaracteristica ? 'selected' : ''}>${ca.nombre}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -46,10 +55,10 @@
                             <input type="number" name="precio_max" class="form-control search-select" min="0" step="1000"
                                    placeholder="Sin limite" value="${filtroPrecioMax}">
                         </div>
-                        <div class="col-lg-2 col-md-12">
+                        <div class="col-lg-2 col-md-6">
                             <label class="form-label search-label"><i class="bi bi-search me-1"></i> Palabra clave</label>
                             <input type="text" name="q" class="form-control search-select"
-                                   placeholder="Ej: casa, balcon..." value="${filtroPalabra}">
+                                   placeholder="Ej: casa..." value="${filtroPalabra}">
                         </div>
                         <div class="col-12 d-flex gap-2">
                             <button type="submit" class="btn btn-gold">

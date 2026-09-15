@@ -148,8 +148,15 @@ public class SolicitudServlet extends HttpServlet {
                        : "No se pudo registrar la solicitud. Intente nuevamente.");
 
         } catch (SQLException e) {
-            session.setAttribute("mensajeError",
-                    "No se pudo registrar la solicitud por un error de base de datos.");
+            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+            if (msg.contains("uq_cita_horario") || msg.contains("duplicate")) {
+                session.setAttribute("mensajeError",
+                        "Ya existe una visita agendada para esta propiedad en la misma fecha y hora. "
+                        + "Por favor elige otro horario.");
+            } else {
+                session.setAttribute("mensajeError",
+                        "No se pudo registrar la solicitud por un error de base de datos.");
+            }
         }
 
         response.sendRedirect(request.getContextPath() + "/SolicitudServlet");

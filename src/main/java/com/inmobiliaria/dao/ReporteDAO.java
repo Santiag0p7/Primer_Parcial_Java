@@ -228,6 +228,51 @@ public class ReporteDAO {
     }
 
     /**
+     * Cuenta las citas (solicitud_visita) agrupadas por estado.
+     * Alimenta el reporte "Citas por estado".
+     *
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public List<MetricaAgrupada> contarCitasPorEstado() throws SQLException {
+        String sql = "SELECT sv.estado AS etiqueta, COUNT(*) AS total "
+                + "FROM solicitud_visita sv "
+                + "GROUP BY sv.estado "
+                + "ORDER BY total DESC";
+        return listarMetricas(sql);
+    }
+
+    /**
+     * Cuenta las solicitudes de compra/arriendo agrupadas por inmobiliaria.
+     * Alimenta el reporte "Solicitudes por inmobiliaria".
+     *
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public List<MetricaAgrupada> listarSolicitudesPorInmobiliaria() throws SQLException {
+        String sql = "SELECT u.correo AS etiqueta, COUNT(s.id_solicitud) AS total "
+                + "FROM solicitud s "
+                + "INNER JOIN propiedad p ON s.id_propiedad = p.id_propiedad "
+                + "INNER JOIN usuario u ON p.id_inmobiliaria = u.id_usuario "
+                + "GROUP BY u.id_usuario, u.correo "
+                + "ORDER BY total DESC";
+        return listarMetricas(sql);
+    }
+
+    /**
+     * Cuenta las propiedades por estado (Activa / Inactiva), evidencia de la
+     * baja logica. Alimenta el reporte "Propiedades por estado".
+     *
+     * @throws SQLException si ocurre un error de acceso a datos
+     */
+    public List<MetricaAgrupada> contarPropiedadesPorEstado() throws SQLException {
+        String sql = "SELECT CASE WHEN p.estado_logico = TRUE THEN 'Activa' ELSE 'Inactiva' END AS etiqueta, "
+                + "COUNT(*) AS total "
+                + "FROM propiedad p "
+                + "GROUP BY p.estado_logico "
+                + "ORDER BY total DESC";
+        return listarMetricas(sql);
+    }
+
+    /**
      * Ejecuta una consulta COUNT(*) sin parametros.
      */
     private int contar(String sql) throws SQLException {

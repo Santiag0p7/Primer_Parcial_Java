@@ -195,6 +195,120 @@ ORDER BY total DESC, c.nombre ASC;</div>
         </div>
     </div>
 
+    <!-- ============ REPORTE 4: citas por estado (GROUP BY) ============ -->
+    <div class="card report-card mb-4">
+        <div class="card-header">
+            <i class="bi bi-calendar-check me-2"></i>Citas por estado
+            <span class="badge bg-light text-dark ms-2">GROUP BY</span>
+        </div>
+        <div class="card-body">
+            <details class="mb-3">
+                <summary class="text-muted small">Ver consulta SQL</summary>
+                <div class="report-sql mt-2">SELECT sv.estado AS etiqueta, COUNT(*) AS total
+FROM solicitud_visita sv
+GROUP BY sv.estado
+ORDER BY total DESC;</div>
+            </details>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead><tr><th>Estado</th><th class="text-center">Citas</th></tr></thead>
+                    <tbody>
+                        <c:choose>
+                            <c:when test="${empty citasPorEstado}">
+                                <tr><td colspan="2" class="text-center py-4 text-muted">Sin citas registradas.</td></tr>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="m" items="${citasPorEstado}">
+                                    <tr>
+                                        <td>${m.etiqueta}</td>
+                                        <td class="text-center"><span class="badge text-bg-primary">${m.total}</span></td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ REPORTE 5: solicitudes por inmobiliaria (INNER JOIN + GROUP BY) ============ -->
+    <div class="card report-card mb-4">
+        <div class="card-header">
+            <i class="bi bi-clipboard-check me-2"></i>Solicitudes de compra/arriendo por inmobiliaria
+            <span class="badge bg-light text-dark ms-2">INNER JOIN + GROUP BY</span>
+        </div>
+        <div class="card-body">
+            <details class="mb-3">
+                <summary class="text-muted small">Ver consulta SQL</summary>
+                <div class="report-sql mt-2">SELECT u.correo AS etiqueta, COUNT(s.id_solicitud) AS total
+FROM solicitud s
+INNER JOIN propiedad p ON s.id_propiedad = p.id_propiedad
+INNER JOIN usuario u   ON p.id_inmobiliaria = u.id_usuario
+GROUP BY u.id_usuario, u.correo
+ORDER BY total DESC;</div>
+            </details>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead><tr><th>Inmobiliaria</th><th class="text-center">Solicitudes</th></tr></thead>
+                    <tbody>
+                        <c:choose>
+                            <c:when test="${empty solicitudesPorInmobiliaria}">
+                                <tr><td colspan="2" class="text-center py-4 text-muted">Sin solicitudes registradas.</td></tr>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="m" items="${solicitudesPorInmobiliaria}">
+                                    <tr>
+                                        <td>${m.etiqueta}</td>
+                                        <td class="text-center"><span class="badge text-bg-primary">${m.total}</span></td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ REPORTE 6: propiedades por estado (GROUP BY) ============ -->
+    <div class="card report-card mb-4">
+        <div class="card-header">
+            <i class="bi bi-house-door me-2"></i>Propiedades por estado (baja logica)
+            <span class="badge bg-light text-dark ms-2">GROUP BY</span>
+        </div>
+        <div class="card-body">
+            <details class="mb-3">
+                <summary class="text-muted small">Ver consulta SQL</summary>
+                <div class="report-sql mt-2">SELECT CASE WHEN p.estado_logico = TRUE THEN 'Activa' ELSE 'Inactiva' END AS etiqueta,
+       COUNT(*) AS total
+FROM propiedad p
+GROUP BY p.estado_logico
+ORDER BY total DESC;</div>
+            </details>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead><tr><th>Estado</th><th class="text-center">Propiedades</th></tr></thead>
+                    <tbody>
+                        <c:choose>
+                            <c:when test="${empty propiedadesPorEstado}">
+                                <tr><td colspan="2" class="text-center py-4 text-muted">Sin propiedades registradas.</td></tr>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="m" items="${propiedadesPorEstado}">
+                                    <tr>
+                                        <td>${m.etiqueta}</td>
+                                        <td class="text-center"><span class="badge text-bg-primary">${m.total}</span></td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

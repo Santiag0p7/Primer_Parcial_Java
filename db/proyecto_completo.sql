@@ -169,6 +169,7 @@ CREATE TABLE solicitud_visita (
     fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_solicitud_cliente (id_cliente),
     INDEX idx_solicitud_propiedad (id_propiedad),
+    UNIQUE KEY uq_cita_horario (id_propiedad, fecha_visita, hora_visita),
     CONSTRAINT fk_solicitud_propiedad FOREIGN KEY (id_propiedad)
         REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_solicitud_cliente FOREIGN KEY (id_cliente)

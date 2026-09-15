@@ -361,13 +361,15 @@ public class PropiedadDAO {
      * @param precioMin Precio minimo (null = sin filtro)
      * @param precioMax Precio maximo (null = sin filtro)
      * @param palabra   Palabra clave en titulo/descripcion (null o vacio = sin filtro)
+     * @param idCaracteristica Filtro por caracteristica N:M (0 o null = sin filtro)
      * @return Lista de propiedades activas que cumplen los filtros
      * @throws SQLException si ocurre un error de acceso a datos
      */
     public List<Propiedad> buscarConFiltros(Integer idCiudad, Integer idTipo,
                                             java.math.BigDecimal precioMin,
                                             java.math.BigDecimal precioMax,
-                                            String palabra) throws SQLException {
+                                            String palabra,
+                                            Integer idCaracteristica) throws SQLException {
 
         StringBuilder sql = new StringBuilder(SELECT_BASE);
         sql.append("WHERE p.estado_logico = TRUE ");
@@ -395,6 +397,11 @@ public class PropiedadDAO {
             String like = "%" + palabra.trim() + "%";
             parametros.add(like);
             parametros.add(like);
+        }
+        if (idCaracteristica != null && idCaracteristica > 0) {
+            sql.append("AND EXISTS (SELECT 1 FROM propiedad_caracteristica pc ")
+               .append("WHERE pc.id_propiedad = p.id_propiedad AND pc.id_caracteristica = ?) ");
+            parametros.add(idCaracteristica);
         }
 
         sql.append("ORDER BY p.fecha_publicacion DESC");

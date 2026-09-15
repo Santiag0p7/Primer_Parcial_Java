@@ -1,5 +1,6 @@
 package com.inmobiliaria.controller;
 
+import com.inmobiliaria.dao.CaracteristicaDAO;
 import com.inmobiliaria.dao.ImagenPropiedadDAO;
 import com.inmobiliaria.dao.PropiedadDAO;
 import com.inmobiliaria.model.ImagenPropiedad;
@@ -35,6 +36,7 @@ public class BuscarPropiedadesServlet extends HttpServlet {
 
     private final PropiedadDAO propiedadDAO = new PropiedadDAO();
     private final ImagenPropiedadDAO imagenDAO = new ImagenPropiedadDAO();
+    private final CaracteristicaDAO caracteristicaDAO = new CaracteristicaDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -47,10 +49,11 @@ public class BuscarPropiedadesServlet extends HttpServlet {
         BigDecimal precioMin = parseDecimalOpcional(request.getParameter("precio_min"));
         BigDecimal precioMax = parseDecimalOpcional(request.getParameter("precio_max"));
         String palabra = primeroNoVacio(request.getParameter("q"), request.getParameter("palabra"));
+        Integer idCaracteristica = parseEnteroOpcional(request.getParameter("idCaracteristica"));
 
         try {
             List<Propiedad> resultados = propiedadDAO.buscarConFiltros(
-                    idCiudad, idTipo, precioMin, precioMax, palabra);
+                    idCiudad, idTipo, precioMin, precioMax, palabra, idCaracteristica);
 
             // Imagen principal de cada resultado para las tarjetas
             Map<Integer, String> imagenesPrincipales = new HashMap<>();
@@ -63,12 +66,13 @@ public class BuscarPropiedadesServlet extends HttpServlet {
 
             request.setAttribute("propiedades", resultados);
             request.setAttribute("imagenesPrincipales", imagenesPrincipales);
-            request.setAttribute("hayFiltros", hayFiltros(idCiudad, idTipo, precioMin, precioMax, palabra));
+            request.setAttribute("hayFiltros", hayFiltros(idCiudad, idTipo, precioMin, precioMax, palabra, idCaracteristica));
             request.setAttribute("filtroCiudad", idCiudad);
             request.setAttribute("filtroTipo", idTipo);
             request.setAttribute("filtroPrecioMin", precioMin);
             request.setAttribute("filtroPrecioMax", precioMax);
             request.setAttribute("filtroPalabra", palabra);
+            request.setAttribute("filtroCaracteristica", idCaracteristica);
 
         } catch (SQLException e) {
             request.setAttribute("errorCatalogo",
@@ -79,6 +83,7 @@ public class BuscarPropiedadesServlet extends HttpServlet {
         try {
             request.setAttribute("tipos", propiedadDAO.listarTipos());
             request.setAttribute("ciudades", propiedadDAO.listarCiudades());
+            request.setAttribute("caracteristicas", caracteristicaDAO.listarTodas());
         } catch (SQLException ignored) {
         }
 
@@ -97,10 +102,11 @@ public class BuscarPropiedadesServlet extends HttpServlet {
     // ====================================================
 
     private boolean hayFiltros(Integer idCiudad, Integer idTipo, BigDecimal min,
-                               BigDecimal max, String palabra) {
+                               BigDecimal max, String palabra, Integer idCaracteristica) {
         return (idCiudad != null && idCiudad > 0)
                 || (idTipo != null && idTipo > 0)
                 || min != null || max != null
+                || (idCaracteristica != null && idCaracteristica > 0)
                 || (palabra != null && !palabra.trim().isEmpty());
     }
 
