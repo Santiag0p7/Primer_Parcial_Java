@@ -1,0 +1,10 @@
+# Normaliza los finales de linea del repositorio.
+# Los scripts de shell deben usar LF para ejecutarse en el contenedor Linux.
+* text=auto
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.jsp text eol=lf
+*.jspf text eol=lf
+*.java text eol=lf
+*.xml text eol=lf
+*.sql text eol=lf
