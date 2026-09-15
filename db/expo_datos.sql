@@ -1,192 +1,19 @@
 ﻿-- ============================================================
--- EXPO COMPLETO - JSGE In-Mobiliaria (TODO EN UNO)
+-- EXPO - SOLO DATOS (NO borra las tablas) - JSGE In-Mobiliaria
 --
--- Borra TODO, recrea el esquema y carga:
+-- Elimina TODAS las filas (sin borrar tablas) y recarga:
 --   * Catalogos, roles y usuarios base (admin, inmo, cliente).
 --   * 10 clientes de exposicion (cliente01..cliente10@jsge.com / cliente123).
 --   * 19 propiedades (4 demo + 15 expo) con imagenes, caracteristicas y citas.
 --
--- NO incluye CREATE DATABASE/USE: se ejecuta sobre la base de datos
--- que tengas seleccionada en la consola (Clever Cloud).
--- Ejecutar una sola vez (es destructivo: elimina las tablas y las recrea).
+-- Los IDs se reinician y quedan consecutivos (propiedades 1..19,
+-- usuarios 1..13). NO elimina las tablas ni su estructura.
 -- ============================================================
 
--- ============================================================
--- PROYECTO COMPLETO - JSGE IN-MOBILIARIA
--- Script SQL consolidado (Sprint 1 + Sprint 2 + Sprint 3)
--- Base de datos: inmobiliaria (MySQL / MariaDB)
---
--- Ejecuta TODA la estructura DDL + datos de prueba DML desde cero.
--- Es idempotente: elimina las tablas existentes antes de recrearlas.
---
--- Credenciales de prueba (contrasena en texto plano):
---   admin@inmobiliaria.com       / admin123     -> ADMINISTRADOR
---   inmo@inmobiliaria.com        / inmo123      -> INMOBILIARIA
---   cliente@inmobiliaria.com     / cliente123   -> CLIENTE
--- ============================================================
+-- USE btlvt8r2avgfr0mrpr5l;   -- descomenta/ajusta si tu consola lo requiere
 
-
-
--- ============================================================
--- 0. LIMPIEZA (orden inverso a las dependencias de FK)
--- ============================================================
-SET FOREIGN_KEY_CHECKS = 0;
-
-DROP TABLE IF EXISTS favorito;
-DROP TABLE IF EXISTS solicitud_visita;
-DROP TABLE IF EXISTS propiedad_caracteristica;
-DROP TABLE IF EXISTS imagen_propiedad;
-DROP TABLE IF EXISTS caracteristica;
-DROP TABLE IF EXISTS propiedad;
-DROP TABLE IF EXISTS ciudad;
-DROP TABLE IF EXISTS tipo_propiedad;
-DROP TABLE IF EXISTS usuario_rol;
-DROP TABLE IF EXISTS perfil;
-DROP TABLE IF EXISTS usuario;
-DROP TABLE IF EXISTS rol;
-
-SET FOREIGN_KEY_CHECKS = 1;
-
--- ============================================================
--- 1. SEGURIDAD Y USUARIOS (Sprint 1)
--- ============================================================
-
--- Tabla: ROL
-CREATE TABLE rol (
-    id_rol INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL UNIQUE
-) ENGINE=InnoDB;
-
--- Tabla: USUARIO
-CREATE TABLE usuario (
-    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    correo VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    estado BOOLEAN DEFAULT TRUE,
-    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
-
--- Tabla intermedia N:M: USUARIO_ROL
-CREATE TABLE usuario_rol (
-    id_usuario INT NOT NULL,
-    id_rol INT NOT NULL,
-    fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_usuario, id_rol),
-    CONSTRAINT fk_usuario_rol_usuario FOREIGN KEY (id_usuario)
-        REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_usuario_rol_rol FOREIGN KEY (id_rol)
-        REFERENCES rol(id_rol) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- Tabla 1:1: PERFIL
-CREATE TABLE perfil (
-    id_perfil INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT NOT NULL UNIQUE,
-    nombres VARCHAR(100) NOT NULL,
-    apellidos VARCHAR(100) NOT NULL,
-    documento VARCHAR(20) NOT NULL UNIQUE,
-    telefono VARCHAR(20),
-    direccion VARCHAR(150),
-    foto_url VARCHAR(255),
-    fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_perfil_usuario FOREIGN KEY (id_usuario)
-        REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- ============================================================
--- 2. CATALOGOS Y PROPIEDADES (Sprint 2)
--- ============================================================
-
--- Tabla: TIPO_PROPIEDAD
-CREATE TABLE tipo_propiedad (
-    id_tipo INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL UNIQUE
-) ENGINE=InnoDB;
-
--- Tabla: CIUDAD (con departamento para administracion - Sprint 3)
-CREATE TABLE ciudad (
-    id_ciudad INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(80) NOT NULL UNIQUE,
-    departamento VARCHAR(80)
-) ENGINE=InnoDB;
-
--- Tabla: PROPIEDAD
-CREATE TABLE propiedad (
-    id_propiedad INT AUTO_INCREMENT PRIMARY KEY,
-    matricula_inmobiliaria VARCHAR(50) NOT NULL UNIQUE,
-    titulo VARCHAR(150) NOT NULL,
-    descripcion TEXT,
-    precio DECIMAL(14,2) NOT NULL,
-    habitaciones INT NOT NULL DEFAULT 0,
-    banos INT NOT NULL DEFAULT 0,
-    area_m2 DECIMAL(10,2) NOT NULL,
-    direccion VARCHAR(180),
-    estado_logico BOOLEAN DEFAULT TRUE,
-    id_inmobiliaria INT NOT NULL,
-    id_tipo INT NOT NULL,
-    id_ciudad INT NOT NULL,
-    fecha_publicacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_propiedad_inmobiliaria FOREIGN KEY (id_inmobiliaria)
-        REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_propiedad_tipo FOREIGN KEY (id_tipo)
-        REFERENCES tipo_propiedad(id_tipo) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_propiedad_ciudad FOREIGN KEY (id_ciudad)
-        REFERENCES ciudad(id_ciudad) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- Tabla: IMAGEN_PROPIEDAD (relacion 1:N con propiedad)
-CREATE TABLE imagen_propiedad (
-    id_imagen INT AUTO_INCREMENT PRIMARY KEY,
-    id_propiedad INT NOT NULL,
-    url_imagen VARCHAR(500) NOT NULL,
-    es_principal BOOLEAN DEFAULT FALSE,
-    CONSTRAINT fk_imagen_propiedad FOREIGN KEY (id_propiedad)
-        REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- Tabla: CARACTERISTICA (catalogo general reutilizable)
-CREATE TABLE caracteristica (
-    id_caracteristica INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(80) NOT NULL UNIQUE
-) ENGINE=InnoDB;
-
--- Tabla intermedia N:M: PROPIEDAD_CARACTERISTICA
-CREATE TABLE propiedad_caracteristica (
-    id_propiedad INT NOT NULL,
-    id_caracteristica INT NOT NULL,
-    PRIMARY KEY (id_propiedad, id_caracteristica),
-    CONSTRAINT fk_pc_propiedad FOREIGN KEY (id_propiedad)
-        REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_pc_caracteristica FOREIGN KEY (id_caracteristica)
-        REFERENCES caracteristica(id_caracteristica) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- ============================================================
--- 3. SOLICITUDES DE VISITA / CITAS (Sprint 3 - Item 1)
--- ============================================================
-
-CREATE TABLE solicitud_visita (
-    id_solicitud INT AUTO_INCREMENT PRIMARY KEY,
-    id_propiedad INT NOT NULL,
-    id_cliente INT NOT NULL,
-    fecha_visita DATE NOT NULL,
-    hora_visita TIME NOT NULL,
-    comentario VARCHAR(500),
-    estado VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
-    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_solicitud_cliente (id_cliente),
-    INDEX idx_solicitud_propiedad (id_propiedad),
-    CONSTRAINT fk_solicitud_propiedad FOREIGN KEY (id_propiedad)
-        REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_solicitud_cliente FOREIGN KEY (id_cliente)
-        REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
--- ============================================================
--- 4. FAVORITOS (lista de deseos del cliente) - N:M
--- ============================================================
-
-CREATE TABLE favorito (
+-- Tabla de favoritos (por si no existiera; no borra nada existente)
+CREATE TABLE IF NOT EXISTS favorito (
     id_usuario INT NOT NULL,
     id_propiedad INT NOT NULL,
     fecha_agregado DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -197,7 +24,37 @@ CREATE TABLE favorito (
         REFERENCES propiedad(id_propiedad) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+-- Borra SOLO los datos (mantiene la estructura de las tablas)
+SET FOREIGN_KEY_CHECKS = 0;
+DELETE FROM favorito;
+DELETE FROM solicitud_visita;
+DELETE FROM propiedad_caracteristica;
+DELETE FROM imagen_propiedad;
+DELETE FROM caracteristica;
+DELETE FROM propiedad;
+DELETE FROM ciudad;
+DELETE FROM tipo_propiedad;
+DELETE FROM usuario_rol;
+DELETE FROM perfil;
+DELETE FROM usuario;
+DELETE FROM rol;
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- Reinicia los IDs (autoincremental)
+ALTER TABLE usuario AUTO_INCREMENT = 1;
+ALTER TABLE perfil AUTO_INCREMENT = 1;
+ALTER TABLE propiedad AUTO_INCREMENT = 1;
+ALTER TABLE imagen_propiedad AUTO_INCREMENT = 1;
+ALTER TABLE solicitud_visita AUTO_INCREMENT = 1;
+ALTER TABLE rol AUTO_INCREMENT = 1;
+ALTER TABLE tipo_propiedad AUTO_INCREMENT = 1;
+ALTER TABLE ciudad AUTO_INCREMENT = 1;
+ALTER TABLE caracteristica AUTO_INCREMENT = 1;
+
 -- ============================================================
+-- DATOS
+-- ============================================================
+
 -- 5. DATOS DE PRUEBA (DML)
 -- ============================================================
 
